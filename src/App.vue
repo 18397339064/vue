@@ -1,15 +1,36 @@
 <template>
   <div id="app">
     <el-row>
-      <el-button type="success" round >添加</el-button>
-      <el-button type="danger" round>批量删除</el-button>
+      <el-button type="success" round @click="addroledialog = true">添加</el-button>
+
+      <!--添加对话框-->
+      <el-dialog title="添加角色" :visible.sync="addroledialog" width="40%" center>
+        <el-form :model="addform" label-width="80px">
+          <el-form-item label="角色名">
+            <el-input v-model="addform.addrolename"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addroledialog = false">取 消</el-button>
+          <el-button type="primary" @click="addrole">确 定</el-button>
+        </div>
+      </el-dialog>
+
+
+      <el-popconfirm @confirm="deleteplrole"
+                     title="确定删除吗？"
+      >
+        <el-button type="danger" slot="reference" round >批量删除</el-button>
+      </el-popconfirm>
     </el-row>
     <br>
-    <el-input placeholder="请输入角色名" style="width: 300px;margin-right: 1100px">
+    <el-input placeholder="请输入角色名" style="width: 300px;margin-right: 1100px" v-model="rolename">
       <template slot="prepend">角色名</template>
+      <el-button slot="append" icon="el-icon-search" @click="query"></el-button>
     </el-input>
     <el-table
-      :data="role">
+      :data="role"
+      @selection-change="selectionchange">
       <el-table-column
         type="selection"
         width="55">
@@ -26,7 +47,7 @@
         fixed="right"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" round>编辑</el-button>
+          <el-button type="primary" round @click="updaterole1(scope.row)">编辑</el-button>
           <el-popconfirm @confirm="deleterole(scope.row.roleid)"
                          title="确定删除吗？"
           >
@@ -35,18 +56,33 @@
         </template>
       </el-table-column>
     </el-table>
-    共计{{totalpage}}页     当前第{{pageindex}}页
+    <br>
     <el-pagination
       background
-      layout="sizes, prev, pager, next"
+      layout="total, sizes, prev, pager, next, jumper"
       :page-sizes="[5, 10, 15, 20]"
       :page-size="size"
       :total="total"
+      :current-page="currentpage"
     @prev-click="prvpage"
       @next-click="nextpage"
     @current-change="currentchange"
       @size-change="sizechange">
     </el-pagination>
+
+    <!--修改对话框-->
+    <el-dialog title="编辑角色" :visible.sync="updateroledialog" width="40%" center>
+      <el-form :model="updateform" label-width="80px">
+        <el-input v-model="updateform.updateroleid" type="hidden"></el-input>
+        <el-form-item label="角色名">
+          <el-input v-model="updateform.updaterolename"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="updateroledialog = false">取 消</el-button>
+        <el-button type="primary" @click="updaterole2">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,13 +95,26 @@ export default {
       pageindex:1,//当前显示页面
       totalpage:0,//总页面
       total:0,  //总条目数
-      size:5  //每页显示多少条
+      size:5,  //每页显示多少条
+      rolename:"",
+      currentpage:1,
+      addroledialog:false,
+      addform: {
+        addrolename: ''
+      },
+      updateroledialog:false,
+      updateform:{
+        updateroleid:0,
+        updaterolename: ''
+      },
+      selectid:"" //复选框选中的id
     }
   },
   methods:{
     getrole() {  //获取数据
       var _this = this;
       var params = new URLSearchParams();
+      params.append("rolename",_this.rolename);
       params.append("page",_this.pageindex);
       params.append("rows",_this.size);
 
@@ -89,10 +138,14 @@ export default {
       this.$axios.post("deleterole.action",params)
         .then(function (result) {  //成功  执行then里面的方法
 
-          _this.$message({
-            message: result.data.msg,
-            type: 'success'
-          });
+          if(result.data.code=="1"){
+            _this.$message({
+              message: result.data.msg,
+              type: 'success'
+            });
+          }else if(result.data.code=="0"){
+            _this.$message.error(result.data.msg);
+          }
 
           _this.getrole();  //删除操作做完，刷新数据
 
@@ -120,6 +173,103 @@ export default {
     sizechange(val){
       this.size=val
       this.getrole()
+    },
+    //通过条件查询
+    query(){
+      this.getrole()
+    },
+    //添加角色
+    addrole(){
+      var _this = this;
+      var params = new URLSearchParams();
+      params.append("rolename",_this.addform.addrolename);
+
+      this.$axios.post("addrole.action",params).then(function (result) {  //成功  执行then里面的方法
+
+        if(result.data.code=="1"){
+          _this.$message({
+            message: result.data.msg,
+            type: 'success'
+          });
+        }else if(result.data.code=="0"){
+          _this.$message.error(result.data.msg);
+        }
+        _this.getrole();
+
+
+      }).catch(function (error) { //失败 执行catch方法
+        console.log(error)
+      });
+      _this.addroledialog=false
+    },
+    //把编辑数据传到对话框
+    updaterole1(row){
+      console.log(row)
+      this.updateroledialog=true;
+      this.updateform.updateroleid=row.roleid;
+      this.updateform.updaterolename=row.rolename;
+    },
+    //编辑角色名
+    updaterole2(){
+      var _this = this;
+      var params = new URLSearchParams();
+      params.append("roleid",_this.updateform.updateroleid);
+      params.append("rolename",_this.updateform.updaterolename);
+
+      this.$axios.post("updaterole.action",params).then(function (result) {  //成功  执行then里面的方法
+
+        if(result.data.code=="1"){
+          _this.$message({
+            message: result.data.msg,
+            type: 'success'
+          });
+        }else if(result.data.code=="0"){
+          _this.$message.error(result.data.msg);
+        }
+
+        _this.getrole();
+
+
+      }).catch(function (error) { //失败 执行catch方法
+        console.log(error)
+      });
+      _this.updateroledialog=false
+    },
+    //复选框选中
+    selectionchange(val){
+      this.selectid=""
+      for(var i=0;i<val.length;i++){
+        this.selectid+=val[i].roleid+",";
+      }
+      console.log(this.selectid)
+
+    },
+    //批量删除
+    deleteplrole(){
+      var _this = this;
+
+      var params = new URLSearchParams();
+      params.append("ids", _this.selectid);
+
+      this.$axios.post("deleteplrole.action",params)
+        .then(function (result) {  //成功  执行then里面的方法
+
+          if(result.data.code=="1"){
+            _this.$message({
+              message: result.data.msg,
+              type: 'success'
+            });
+          }else if(result.data.code=="0"){
+            _this.$message.error(result.data.msg);
+          }
+
+          _this.getrole();  //删除操作做完，刷新数据
+
+
+        }).catch(function (error) { //失败 执行catch方法
+        console.log(error)
+      });
+
     }
   },
   created:function(){
