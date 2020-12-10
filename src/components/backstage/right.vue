@@ -17,29 +17,22 @@
 </template>
 
 <script>
-  import Test from '../../App.vue'
+  import Menu from '../data/Menu.vue'
+  import Role from '../data/Role.vue'
+  import User from '../data/User.vue'
   export default {
     name: "right",
     components:{
-      test:Test,
-      /*userlist:Userlist,
-      deptlist:Deptlist*/
+      menus:Menu,
+      role:Role,
+      user:User
     },
     data() {
       return {
         //选项卡的绑定值name  这个值是什么就绑定选项卡数组中name值等于editableTabsValue值的选项卡
         editableTabsValue: '1',
         //选项卡数组
-        editableTabs: [{
-          title: 'Tab 1',
-          name: '1',
-          content: 'test',
-
-        }, {
-          title: 'Tab 2',
-          name: '2',
-          content:'test',
-        }],
+        editableTabs: [],
         tabIndex: 2
       }
     },

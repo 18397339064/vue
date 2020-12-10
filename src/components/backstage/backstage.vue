@@ -43,41 +43,7 @@
     },
     data() {
       return {
-        isCollapse: true,
-        menusData: [{
-          id: 1,
-          title: "系统管理",
-          icon: "el-icon-setting",
-          children: [
-            {
-              id: 2,
-              title: "用户管理",
-              icon: "el-icon-platform-eleme",
-              url: "userTest",
-              children: []
-            },
-            {
-              id: 3,
-              title: "测试管理",
-              icon: "el-icon-platform-eleme",
-              url: "test1",
-              children: []
-            },
-          ],
-        },
-          {
-            id: 2,
-            title: "订单",
-            icon: "el-icon-setting",
-            children: [{
-              id: 1,
-              title: "订单查询",
-              icon: "el-icon-platform-eleme",
-              url: "userTest",
-              children: []
-            },]
-          }
-        ],
+        isCollapse: true
 
       };
     },
