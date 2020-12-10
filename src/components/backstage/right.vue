@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import Test from '../../App.vue'
+
   export default {
     name: "right",
     components:{
