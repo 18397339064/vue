@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="margin-top: -10px">
     <el-row>
       <el-button type="success" round @click="adduserdialog=true">添加</el-button>
 
@@ -65,8 +65,8 @@
             <template slot="prepend">姓名</template>
           </el-input>
         </el-col>
-        <el-col :span="5">
-          <div style="padding-top: 10px">
+        <el-col :span="7">
+          <div style="padding-top: 10px;padding-left: 100px">
             <el-radio v-model="radio" label="男" @change="query">男</el-radio>
             <el-radio v-model="radio" label="女" @change="query">女</el-radio>
           </div>

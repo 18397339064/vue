@@ -12,15 +12,15 @@
 
           <el-submenu :index="menu.id"  v-for="menu in menusData">
                 <template  slot="title">
-                  <i :class="menu.icon"></i>
-                  <span>{{menu.title}}</span>
+                  <i :class="menu.iconUrl"></i>
+                  <span>{{menu.name}}</span>
                 </template>
 
 
              <!-- <el-menu-item-group>-->
 
-              <el-menu-item  :index="menu.id+'_'+childe.id"  v-for="childe in menu.children" @click="addTable(childe.title,childe.url)">
-                <i :class="childe.icon"></i>{{childe.title}}</el-menu-item>
+              <el-menu-item  :index="menu.id+'_'+childe.id"  v-for="childe in menu.childMenu" @click="addTable(childe.name,childe.linkUrl)">
+                <i :class="childe.iconUrl"></i>{{childe.name}}</el-menu-item>
               <!--</el-menu-item-group>-->
 
 
@@ -37,41 +37,7 @@
       name: "left",
       data() {
         return {
-          menusData: [{
-            id: 1,
-            title: "系统管理",
-            icon: "el-icon-setting",
-            children: [
-              {
-                id: 2,
-                title: "用户管理",
-                icon: "el-icon-platform-eleme",
-                url: "userTest",
-                children: []
-              },
-              {
-                id: 3,
-                title: "测试管理",
-                icon: "el-icon-platform-eleme",
-                url: "test",
-                children: []
-              },
-            ],
-          },
-           /* {
-              id: 2,
-              title: "订单",
-              icon: "el-icon-setting",
-              children: [{
-                id: 1,
-                title: "订单查询",
-                icon: "el-icon-platform-eleme",
-                url: "userTest",
-                children: []
-              },]
-            }*/
-          ],
-
+          menusData: []
         }
       },
       methods: {
@@ -84,7 +50,21 @@
         },
         handleClose(key, keyPath) {
           console.log(key, keyPath);
-        }
+        },
+        getmenudata() {  //获取数据
+          var _this = this;
+
+          this.$axios.post("queryAllLeftMenu.action").then(function (result) {  //成功  执行then里面的方法
+            _this.menusData = result.data;
+            console.log("23::"+result.data)
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
+        },
+      },
+      created() {
+        this.getmenudata();
       }
     }
 </script>

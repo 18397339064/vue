@@ -75,7 +75,7 @@
       </div>
       <hr>
       <div>
-        <p>© 2019 imooc.com 京ICP备12003892号-11 北京奥鹏文化传媒有限公司 版权所有</p>
+        <p>© 2020 imooc.com 京ICP备12003892号-11 嘉兴杨林有限公司 版权所有</p>
       </div>
     </div>
 </template>

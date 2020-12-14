@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="margin-top: -10px">
     <el-row>
       <el-button type="success" round @click="addmenudialog = true">添加</el-button>
 
