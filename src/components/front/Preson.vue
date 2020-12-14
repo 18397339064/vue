@@ -1,9 +1,6 @@
 <template>
     <div id="app">
       <br>
-      <el-page-header content="用户中心">
-      </el-page-header>
-      <br>
       <hr>
       <div style="margin-left: 100px;margin-top: 30px;width: 1000px;">
         <el-tabs :tab-position="tabPosition">
