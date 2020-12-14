@@ -5,6 +5,8 @@ import Index from './Index.vue'
 import ShoppingCar from './ShoppingCar.vue'
 import Commodity from './Commodity.vue'
 import User from './User.vue'
+import AppStaff from "./AppStaff";
+import Staff from "./Staff";
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -20,5 +22,5 @@ Vue.prototype.$axios = Axios
 
 new Vue({
   el: '#app',
-  render: h => h(Commodity)
+  render: h => h(AppStaff)
 })
