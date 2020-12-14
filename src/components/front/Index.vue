@@ -16,10 +16,10 @@
         </el-carousel-item>
       </el-carousel>
 
-      <div>
+      <div  v-for="cate in category">
         <div class="am-container ">
           <div class="shopTitle ">
-            <h3>甜点/蛋糕</h3>
+            <h3>{{cate.ctname}}</h3>
           </div>
         </div>
         <el-row>
@@ -56,9 +56,25 @@
               {name:"../img/7.png",spname:"真香预警 超级好吃 手撕面包 儿童早餐早饭"},
               {name:"../img/8.png",spname:"机器猫最爱 铜锣烧 最美下午茶"},
               {name:"../img/9.png",spname:"超好吃华夫饼 美食诱惑 下午茶"}
-            ]
+            ],
+            category:[]
           }
+        },
+      methods:{
+        getCate() {  //获取数据
+          var _this = this;
+
+          this.$axios.post("queryAllCategory.action").then(function (result) {  //成功  执行then里面的方法
+            _this.category = result.data.rows;
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
         }
+      },
+      created() {
+          this.getCate();
+      }
     }
 </script>
 

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Backstage from './components/backstage/backstage.vue'
 import StaffLogin from './components/backstage/staffLogin.vue'
-import Index from "./components/front/Index";
 import NavMenu from "./components/front/NavMenu";
 
 import ElementUI from 'element-ui'
