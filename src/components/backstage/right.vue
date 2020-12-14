@@ -20,12 +20,14 @@
   import Menu from '../data/Menu.vue'
   import Role from '../data/Role.vue'
   import User from '../data/User.vue'
+  import RoleMenu from '../data/RoleMenu.vue'
   export default {
     name: "right",
     components:{
       menus:Menu,
       role:Role,
-      user:User
+      user:User,
+      rolemenu:RoleMenu
     },
     data() {
       return {

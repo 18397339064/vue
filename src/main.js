@@ -1,11 +1,8 @@
 import Vue from 'vue'
-import Index from './Index.vue'
-import ShoppingCar from './ShoppingCar.vue'
-import Commodity from './Commodity.vue'
-import UserLogin from './UserLogin.vue'
-import ZhuCeUser from './ZhuCeUser.vue'
-import Preson from './Preson.vue'
 import Backstage from './components/backstage/backstage.vue'
+import StaffLogin from './components/backstage/staffLogin.vue'
+import Index from "./components/front/Index";
+import NavMenu from "./components/front/NavMenu";
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -21,5 +18,5 @@ Vue.prototype.$axios = Axios
 
 new Vue({
   el: '#app',
-  render: h => h(Preson)
+  render: h => h(NavMenu)
 })
