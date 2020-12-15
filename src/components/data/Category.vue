@@ -77,7 +77,7 @@
     </el-pagination>
 
     <!--修改对话框-->
-    <el-dialog title="编辑角色" :visible.sync="updatecategorydialog" width="40%" center>
+    <el-dialog title="编辑分类" :visible.sync="updatecategorydialog" width="40%" center>
       <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
         <el-input v-model="updateform.ctid" type="hidden"></el-input>
         <el-form-item label="分类名" prop="ctname">

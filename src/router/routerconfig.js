@@ -11,7 +11,8 @@ Vue.use(VueRouter)
 //组装路由数组
 var routes=[
 	{path:"/stafflogin", component:StaffLogin},
-  {path:"/backstage",component:Backstage}
+  {path:"/backstage",component:Backstage},
+  {path:"/",component:StaffLogin}
 ]
 
 //将路由数组应用到路由管理器中
