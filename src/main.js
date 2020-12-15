@@ -3,7 +3,7 @@ import Backstage from './components/backstage/backstage.vue'
 import StaffLogin from './components/backstage/staffLogin.vue'
 import NavMenu from "./components/front/NavMenu";
 import Router from './router/routerconfig.js'
-
+import App from './app.vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -19,6 +19,6 @@ Vue.prototype.$axios = Axios
 import app from "./app.vue";
 new Vue({
   el: '#app',
-  render: h => h(app),
+  render: h => h(Backstage),
   router:Router
 })
