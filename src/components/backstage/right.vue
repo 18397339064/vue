@@ -22,7 +22,8 @@
   import User from '../data/User.vue'
   import RoleMenu from '../data/RoleMenu.vue'
   import Category from '../data/Category.vue'
-  import Staff from "../data/Staff";
+  import Staff from "../data/Staff"
+  import StaffRole from "../data/StaffRole"
   export default {
     name: "right",
     components:{
@@ -31,7 +32,8 @@
       user:User,
       rolemenu:RoleMenu,
       category:Category,
-      staff:Staff
+      staff:Staff,
+      staffrole:StaffRole
     },
     data() {
       return {

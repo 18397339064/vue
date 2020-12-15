@@ -5,17 +5,17 @@
 
       <!--添加对话框-->
       <el-dialog title="添加分类" :visible.sync="addcategorydialog" width="40%" center>
-        <el-form :model="addform" label-width="80px">
-          <el-form-item label="分类名">
+        <el-form :model="addform" label-width="80px" :rules="addforms" ref="addformref">
+          <el-form-item label="分类名" prop="ctname">
             <el-input v-model="addform.ctname"></el-input>
           </el-form-item>
-          <el-form-item label="分类图标">
+          <el-form-item label="分类图标" prop="ctimg">
             <el-input v-model="addform.ctimg"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addcategorydialog = false">取 消</el-button>
-          <el-button type="primary" @click="add">确 定</el-button>
+          <el-button type="primary" @click="add('addformref')">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -27,9 +27,8 @@
       </el-popconfirm>
     </el-row>
     <br>
-    <el-input placeholder="请输入分类名" clearable style="width: 300px;margin-right: 1100px" v-model="ctname">
+    <el-input placeholder="请输入分类名" clearable style="width: 300px;margin-right: 1100px" v-model="ctname" @change="query">
       <template slot="prepend">分类名</template>
-      <el-button slot="append" icon="el-icon-search" @click="query"></el-button>
     </el-input>
     <el-table
       :data="category"
@@ -79,18 +78,18 @@
 
     <!--修改对话框-->
     <el-dialog title="编辑角色" :visible.sync="updatecategorydialog" width="40%" center>
-      <el-form :model="updateform" label-width="80px">
+      <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
         <el-input v-model="updateform.ctid" type="hidden"></el-input>
-        <el-form-item label="分类名">
+        <el-form-item label="分类名" prop="ctname">
           <el-input v-model="updateform.ctname"></el-input>
         </el-form-item>
-        <el-form-item label="分类图标">
+        <el-form-item label="分类图标" prop="ctimg">
           <el-input v-model="updateform.ctimg"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updatecategorydialog = false">取 消</el-button>
-        <el-button type="primary" @click="update2">确 定</el-button>
+        <el-button type="primary" @click="update2('updateformref')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -110,8 +109,17 @@
         currentpage:1,
         addcategorydialog:false,
         addform: {
-          ctname: '',
+          ctname:'',
           ctimg:''
+        },
+        addforms:{
+          ctname: [
+            { required: true, message: "分类名不能为空", trigger: "blur" },
+            { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+          ],
+          ctimg: [
+            { required: true, message: "分类图标不能为空", trigger: "blur" }
+          ]
         },
         updatecategorydialog:false,
         updateform:{
@@ -119,6 +127,15 @@
           ctname: '',
           ctimg: ''
         },
+        updateforms:{
+           ctname: [
+             { required: true, message: "分类名不能为空", trigger: "blur" },
+             { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+           ],
+           ctimg: [
+             { required: true, message: "分类图标不能为空", trigger: "blur" }
+           ]
+         },
         selectid:"" //复选框选中的id
       }
     },
@@ -187,25 +204,32 @@
         this.getData()
       },
       //添加角色
-      add(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("ctname",_this.addform.ctname);
-        params.append("ctimg",_this.addform.ctimg);
+      add(formName){
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            var _this = this;
+            var params = new URLSearchParams();
+            params.append("ctname",_this.addform.ctname);
+            params.append("ctimg",_this.addform.ctimg);
 
-        this.$axios.post("addCategory.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("addCategory.action",params).then(function (result) {  //成功  执行then里面的方法
 
-            _this.$message({
-              message: result.data,
-              type: 'success'
+              _this.$message({
+                message: result.data,
+                type: 'success'
+              });
+              _this.getData();
+
+
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
             });
-          _this.getData();
-
-
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
+            _this.addcategorydialog=false
+          } else {
+            console.log("error submit!!");
+            return false;
+          }
         });
-        _this.addcategorydialog=false
       },
       //把编辑数据传到对话框
       update1(row){
@@ -216,27 +240,34 @@
         this.updateform.ctimg=row.ctimg;
       },
       //编辑角色名
-      update2(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("ctid",_this.updateform.ctid);
-        params.append("ctname",_this.updateform.ctname);
-        params.append("ctimg",_this.updateform.ctimg);
+      update2(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            var params = new URLSearchParams();
+            params.append("ctid",_this.updateform.ctid);
+            params.append("ctname",_this.updateform.ctname);
+            params.append("ctimg",_this.updateform.ctimg);
 
-        this.$axios.post("updateCategory.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("updateCategory.action",params).then(function (result) {  //成功  执行then里面的方法
 
-            _this.$message({
-              message: result.data,
-              type: 'success'
+              _this.$message({
+                message: result.data,
+                type: 'success'
+              });
+
+              _this.getData();
+
+
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
             });
-
-          _this.getData();
-
-
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
+            _this.updatecategorydialog=false
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
         });
-        _this.updatecategorydialog=false
       },
       //复选框选中
       selectionchange(val){

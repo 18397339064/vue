@@ -5,21 +5,21 @@
 
       <!--添加对话框-->
       <el-dialog title="添加员工" :visible.sync="addstaffdialog" width="40%" center>
-        <el-form :model="addform" label-width="80px">
-          <el-form-item label="员工账号">
-            <el-input v-model="addform.addstaffaccount"></el-input>
+        <el-form :model="addform" label-width="80px" ref="addformref" :rules="addforms">
+          <el-form-item label="员工账号" prop="addstaffaccount">
+            <el-input v-model="addform.addstaffaccount" @change="querystaffaccount"></el-input>
           </el-form-item>
-          <el-form-item label="员工密码">
+          <el-form-item label="员工密码" prop="addstaffpwd">
             <el-input v-model="addform.addstaffpwd"></el-input>
           </el-form-item>
-          <el-form-item label="员工姓名">
+          <el-form-item label="员工姓名" prop="addstaffname">
             <el-input v-model="addform.addstaffname"></el-input>
           </el-form-item>
           <el-form-item label="员工性别">
             <el-radio v-model="addform.addstaffsex" label="男">男</el-radio>
             <el-radio v-model="addform.addstaffsex" label="女">女</el-radio>
           </el-form-item>
-          <el-form-item label="员工电话">
+          <el-form-item label="员工电话" prop="addstaffphone">
             <el-input v-model="addform.addstaffphone"></el-input>
           </el-form-item>
 
@@ -27,7 +27,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addstaffdialog = false">取 消</el-button>
-          <el-button type="primary" @click="addstaff">确 定</el-button>
+          <el-button type="primary" @click="addstaff('addformref')">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -42,14 +42,17 @@
     <br>
     <el-row>
     <el-col :span="5">
-      <el-input placeholder="请输入姓名" clearable style="width: 300px;margin-right: 1100px" v-model="staffname" @change="query">
+      <el-input placeholder="请输入姓名" clearable style="width: 280px;margin-right: 1100px" v-model="staffname" @change="query">
         <template slot="prepend">姓名</template>
       </el-input>
     </el-col>
-    <el-col :span="7">
-      <div style="padding-top: 10px;padding-left: 100px">
-        <el-radio v-model="radio" label="男" @change="query">男</el-radio>
-        <el-radio v-model="radio" label="女" @change="query">女</el-radio>
+    <el-col :span="8">
+      <div style="margin-left: 100px">
+        <el-select v-model="radio" @change="query">
+          <el-option value="" label="---请选择性别---"></el-option>
+          <el-option value="男" label="男"></el-option>
+          <el-option value="女" label="女"></el-option>
+        </el-select>
       </div>
     </el-col>
   </el-row>
@@ -113,28 +116,28 @@
     </el-pagination>
     <!--修改对话框-->
     <el-dialog title="编辑员工" :visible.sync="updatestaffdialog" width="40%" center>
-      <el-form :model="updateform" label-width="80px">
+      <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
         <el-input v-model="updateform.updatestaffid" type="hidden"></el-input>
         <el-form-item label="员工账号">
           <el-input v-model="updateform.updatestaffaccount" readonly></el-input>
         </el-form-item>
-        <el-form-item label="员工密码">
+        <el-form-item label="员工密码" prop="updatestaffpwd">
           <el-input v-model="updateform.updatestaffpwd"></el-input>
         </el-form-item>
-        <el-form-item label="员工姓名">
+        <el-form-item label="员工姓名" prop="updatestaffname">
           <el-input v-model="updateform.updatestaffname"></el-input>
         </el-form-item>
         <el-form-item label="员工性别">
           <el-input v-model="updateform.updatestaffsex" readonly></el-input>
         </el-form-item>
-        <el-form-item label="员工电话">
+        <el-form-item label="员工电话" prop="updatestaffphone">
           <el-input v-model="updateform.updatestaffphone"></el-input>
         </el-form-item>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updatestaffdialog = false">取 消</el-button>
-        <el-button type="primary" @click="updatestaff2">确 定</el-button>
+        <el-button type="primary" @click="updatestaff2('updateformref')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -161,6 +164,24 @@
           addstaffsex:'男',
           addstaffphone:''
         },
+        addforms:{
+          addstaffaccount:[
+            { required: true, message: "账号不能为空", trigger: "blur" },
+            { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          ],
+          addstaffpwd:[
+            { required: true, message: "密码不能为空", trigger: "blur" },
+            { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          ],
+          addstaffname:[
+            { required: true, message: "姓名不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '姓名只能为中文' }
+          ],
+          addstaffphone:[
+            { required: true, message: "电话号码不能为空", trigger: "blur" },
+            {pattern:/^1[0-9]\d{9}$/,message: '请输入正确的11位手机号码' }
+          ]
+        },
         updatestaffdialog:false,
         updateform:{
           updatestaffid:0,
@@ -169,6 +190,20 @@
           updatestaffname:'',
           updatestaffsex:'男',
           updatestaffphone:''
+        },
+        updateforms:{
+          updatestaffpwd:[
+            { required: true, message: "密码不能为空", trigger: "blur" },
+            { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          ],
+          updatestaffname:[
+            { required: true, message: "姓名不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '姓名只能为中文' }
+          ],
+          updatestaffphone:[
+            { required: true, message: "电话号码不能为空", trigger: "blur" },
+            {pattern:/^1[0-9]\d{9}$/,message: '请输入正确的11位手机号码' }
+          ]
         },
         selectid:"" //复选框选中的id*/
       }
@@ -243,33 +278,40 @@
         this.getstaff()
       },
       //添加数据
-      addstaff(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("staffaccount",_this.addform.addstaffaccount);
-        params.append("staffpwd",_this.addform.addstaffpwd);
-        params.append("staffname",_this.addform.addstaffname);
-        params.append("staffsex",_this.addform.addstaffsex);
-        params.append("staffphone",_this.addform.addstaffphone);
+      addstaff(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            var params = new URLSearchParams();
+            params.append("staffaccount",_this.addform.addstaffaccount);
+            params.append("staffpwd",_this.addform.addstaffpwd);
+            params.append("staffname",_this.addform.addstaffname);
+            params.append("staffsex",_this.addform.addstaffsex);
+            params.append("staffphone",_this.addform.addstaffphone);
 
-        this.$axios.post("addstaff.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("addstaff.action",params).then(function (result) {  //成功  执行then里面的方法
 
-          if(result.data.code=="1"){
-            _this.$message({
-              message: result.data.msg,
-              type: 'success'
+              if(result.data.code=="1"){
+                _this.$message({
+                  message: result.data.msg,
+                  type: 'success'
+                });
+
+                _this.getstaff();
+              }else if(result.data.code=="0"){
+                _this.$message.error(result.data.msg);
+              }
+
+
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
             });
-
-            _this.getstaff();
-          }else if(result.data.code=="0"){
-            _this.$message.error(result.data.msg);
+            _this.addstaffdialog=false
+          } else {
+            console.log('error submit!!');
+            return false;
           }
-
-
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
         });
-        _this.addstaffdialog=false
       },
       //把编辑数据传到对话框
       updatestaff1(row){
@@ -285,35 +327,43 @@
       },
 
       //编辑数据
-      updatestaff2(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("staffid",_this.updateform.updatestaffid);
-        params.append("staffaccount",_this.updateform.updatestaffaccount);
-        params.append("staffpwd",_this.updateform.updatestaffpwd);
-        params.append("staffname",_this.updateform.updatestaffname);
-        params.append("staffsex",_this.updateform.updatestaffsex);
-        params.append("staffphone",_this.updateform.updatestaffphone);
+      updatestaff2(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            var params = new URLSearchParams();
+            params.append("staffid",_this.updateform.updatestaffid);
+            params.append("staffaccount",_this.updateform.updatestaffaccount);
+            params.append("staffpwd",_this.updateform.updatestaffpwd);
+            params.append("staffname",_this.updateform.updatestaffname);
+            params.append("staffsex",_this.updateform.updatestaffsex);
+            params.append("staffphone",_this.updateform.updatestaffphone);
 
 
-        this.$axios.post("updatestaff.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("updatestaff.action",params).then(function (result) {  //成功  执行then里面的方法
 
-          if(result.data.code=="1"){
-            _this.$message({
-              message: result.data.msg,
-              type: 'success'
+              if(result.data.code=="1"){
+                _this.$message({
+                  message: result.data.msg,
+                  type: 'success'
+                });
+              }else if(result.data.code=="0"){
+                _this.$message.error(result.data.msg);
+              }
+
+              _this.getstaff();
+
+
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
             });
-          }else if(result.data.code=="0"){
-            _this.$message.error(result.data.msg);
+            _this.updatestaffdialog=false
+          } else {
+            console.log('error submit!!');
+            return false;
           }
-
-          _this.getstaff();
-
-
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
         });
-        _this.updatestaffdialog=false
+
       },
       //复选框选中
       selectionchange(val){
@@ -351,6 +401,27 @@
         });
 
 
+      },
+      querystaffaccount(){
+        var _this = this;
+        var params = new URLSearchParams();
+        params.append("staffaccount",_this.addform.addstaffaccount);
+
+        this.$axios.post("querystaffaccount.action",params)
+          .then(function (result) {
+            if(result.data.code=="1"){
+              _this.$message({
+                message: result.data.msg,
+                type: 'success'
+              });
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+              _this.addform.addstaffaccount='';
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
       }
     },
     created:function(){
