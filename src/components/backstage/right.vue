@@ -20,12 +20,20 @@
   import Menu from '../data/Menu.vue'
   import Role from '../data/Role.vue'
   import User from '../data/User.vue'
+  import RoleMenu from '../data/RoleMenu.vue'
+  import Category from '../data/Category.vue'
+  import Staff from "../data/Staff"
+  import StaffRole from "../data/StaffRole"
   export default {
     name: "right",
     components:{
       menus:Menu,
       role:Role,
-      user:User
+      user:User,
+      rolemenu:RoleMenu,
+      category:Category,
+      staff:Staff,
+      staffrole:StaffRole
     },
     data() {
       return {

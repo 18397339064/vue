@@ -1,29 +1,5 @@
 <template>
     <div id="app">
-      <el-menu
-        class="el-menu-demo"
-        mode="horizontal"
-        background-color="#2c3e50"
-        text-color="white"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1" style="padding-left: 50px">首页</el-menu-item>
-        <el-submenu index="2">
-          <template slot="title">分类</template>
-          <el-submenu index="2-1">
-            <template slot="title"><i class="el-icon-dessert" style="color: white"></i>甜点/蛋糕</template>
-              <el-menu-item index="2-4-1">网红烘焙蛋糕 好吃的蛋糕</el-menu-item>
-              <el-menu-item index="2-4-2">进口美食凤梨酥</el-menu-item>
-              <el-menu-item index="2-4-3">美味沙琪玛 超棒下午茶</el-menu-item>
-          </el-submenu>
-          <el-menu-item index="2-2"><i class="el-icon-potato-strips" style="color: white"></i>饼干/膨化</el-menu-item>
-          <el-menu-item index="2-3"><i class="el-icon-chicken" style="color: white"></i>熟食/肉类</el-menu-item>
-
-        </el-submenu>
-        <el-menu-item index="3">购物车</el-menu-item>
-        <el-menu-item index="4">个人中心</el-menu-item>
-        <el-menu-item index="5" style="padding-left: 800px">登录</el-menu-item>
-        <el-menu-item index="6" style="padding-left: 50px">注册</el-menu-item>
-      </el-menu>
       <br>
       <div style="">
         <el-input
@@ -40,10 +16,10 @@
         </el-carousel-item>
       </el-carousel>
 
-      <div>
+      <div  v-for="cate in category">
         <div class="am-container ">
           <div class="shopTitle ">
-            <h3>甜点/蛋糕</h3>
+            <h3>{{cate.ctname}}</h3>
           </div>
         </div>
         <el-row>
@@ -59,7 +35,7 @@
         <p>© 2020 imooc.com 京ICP备12003892号-11 嘉兴杨林有限公司 版权所有</p>
       </div>
 
-      </div>
+    </div>
 
 </template>
 
@@ -80,9 +56,25 @@
               {name:"../img/7.png",spname:"真香预警 超级好吃 手撕面包 儿童早餐早饭"},
               {name:"../img/8.png",spname:"机器猫最爱 铜锣烧 最美下午茶"},
               {name:"../img/9.png",spname:"超好吃华夫饼 美食诱惑 下午茶"}
-            ]
+            ],
+            category:[]
           }
+        },
+      methods:{
+        getCate() {  //获取数据
+          var _this = this;
+
+          this.$axios.post("queryAllCategory.action").then(function (result) {  //成功  执行then里面的方法
+            _this.category = result.data.rows;
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
         }
+      },
+      created() {
+          this.getCate();
+      }
     }
 </script>
 
