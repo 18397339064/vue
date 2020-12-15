@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="margin-top: -10px">
     <div style="width: 400px">
       <el-table
         :data="role"
@@ -18,7 +18,7 @@
     </div>
 
     <el-dialog title="分配权限" :visible.sync="authorRoleMenudialog" @close="closeDialog" width="40%" center>
-
+        <el-input v-model="rname" readonly style="width: 200px"></el-input>
         <el-tree
           :data="menuDate"
           show-checkbox
@@ -28,9 +28,6 @@
           :default-checked-keys="roleMenu"
           :default-expand-all="false"
           :expand-on-click-node="false">
-      <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span>{{ node.label }}</span>
-      </span>
         </el-tree>
 
 
@@ -54,13 +51,13 @@
             authorRoleMenudialog:false,
             menuids:[],//获取所有选中的节点
             roleid:0,
-            mids:''
+            mids:'',
+            rname:''
           }
         },
         methods:{
           getrole() {  //获取数据
             var _this = this;
-            var params = new URLSearchParams();
             this.$axios.post("queryrolecount.action").then(function (result) {  //成功  执行then里面的方法
               _this.role = result.data.rows;
 
@@ -78,7 +75,6 @@
             });
           },
           getRoleMenu(row,column,event){
-            this.getdata();
             var _this = this;
 
             _this.authorRoleMenudialog=true;
@@ -90,7 +86,9 @@
                 _this.roleMenu.push(result.data[i].mid);
               };
               _this.roleid=row.roleid;
+              _this.rname=row.rolename
 
+              _this.getdata();
             }).catch(function (error) { //失败 执行catch方法
               console.log(error)
             });

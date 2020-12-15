@@ -9,12 +9,12 @@
       style="height: 270px">
         <h3 class="title">登录</h3>
         <el-form-item >
-          <el-input type="text"
+          <el-input type="text" v-model="loginstaffaccount"
                     placeholder="用户名"
           />
         </el-form-item>
         <el-form-item >
-          <el-input type="password"
+          <el-input type="password" v-model="loginstaffpwd"
                     placeholder="密码"
           />
         </el-form-item>
@@ -26,12 +26,36 @@
 </template>
 
 <script>
-  import backstage from "./backstage";
     export default {
         name: "app",
+        data(){
+          return {
+            loginstaffaccount:'',
+            loginstaffpwd:''
+          }
+        },
       methods:{
         stafflogin(){
+          var _this = this;
+          var params = new URLSearchParams();
+          params.append("staffaccount",_this.loginstaffaccount);
+          params.append("staffpwd",_this.loginstaffpwd);
 
+          this.$axios.post("loginstaff.action",params).then(function (result) {  //成功  执行then里面的方法
+            if(result.data.code=="1"){
+              _this.$message({
+                message: result.data.msg,
+                type: 'success'
+              });
+              _this.$router.push("/backstage")
+
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+            }
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
         }
       }
     }

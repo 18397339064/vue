@@ -10,7 +10,7 @@
         @close="handleClose">
 
 
-          <el-submenu :index="menu.id"  v-for="menu in menusData">
+          <el-submenu :index="menu.id+''"  v-for="menu in menusData">
                 <template  slot="title">
                   <i :class="menu.iconUrl"></i>
                   <span>{{menu.name}}</span>

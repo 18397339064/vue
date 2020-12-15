@@ -5,14 +5,14 @@
 
       <!--添加对话框-->
       <el-dialog title="添加角色" :visible.sync="addroledialog" width="40%" center>
-        <el-form :model="addform" label-width="80px">
-          <el-form-item label="角色名">
+        <el-form :model="addform" label-width="80px" ref="addformref" :rules="addforms">
+          <el-form-item label="角色名" prop="addrolename">
             <el-input v-model="addform.addrolename"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addroledialog = false">取 消</el-button>
-          <el-button type="primary" @click="addrole">确 定</el-button>
+          <el-button type="primary" @click="addrole('addformref')">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -24,9 +24,8 @@
       </el-popconfirm>
     </el-row>
     <br>
-    <el-input placeholder="请输入角色名" clearable style="width: 300px;margin-right: 1100px" v-model="rolename">
+    <el-input placeholder="请输入角色名" clearable style="width: 300px;margin-right: 1100px" v-model="rolename" @change="query">
       <template slot="prepend">角色名</template>
-      <el-button slot="append" icon="el-icon-search" @click="query"></el-button>
     </el-input>
     <el-table
       :data="role"
@@ -72,15 +71,15 @@
 
     <!--修改对话框-->
     <el-dialog title="编辑角色" :visible.sync="updateroledialog" width="40%" center>
-      <el-form :model="updateform" label-width="80px">
+      <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
         <el-input v-model="updateform.updateroleid" type="hidden"></el-input>
-        <el-form-item label="角色名">
+        <el-form-item label="角色名" prop="updaterolename">
           <el-input v-model="updateform.updaterolename"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updateroledialog = false">取 消</el-button>
-        <el-button type="primary" @click="updaterole2">确 定</el-button>
+        <el-button type="primary" @click="updaterole2('updateformref')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -102,10 +101,22 @@ export default {
       addform: {
         addrolename: ''
       },
+      addforms:{
+        addrolename:[
+          { required: true, message: "角色名不能为空", trigger: "blur" },
+          { min: 2, max: 6, message: "长度在 2 到 6 个字符", trigger: "blur" }
+        ]
+      },
       updateroledialog:false,
       updateform:{
         updateroleid:0,
         updaterolename: ''
+      },
+      updateforms:{
+        updaterolename:[
+          { required: true, message: "角色名不能为空", trigger: "blur" },
+          { min: 2, max: 6, message: "长度在 2 到 6 个字符", trigger: "blur" }
+        ]
       },
       selectid:"" //复选框选中的id
     }
@@ -179,28 +190,35 @@ export default {
       this.getrole()
     },
     //添加角色
-    addrole(){
-      var _this = this;
-      var params = new URLSearchParams();
-      params.append("rolename",_this.addform.addrolename);
+    addrole(formName){
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var _this = this;
+          var params = new URLSearchParams();
+          params.append("rolename",_this.addform.addrolename);
 
-      this.$axios.post("addrole.action",params).then(function (result) {  //成功  执行then里面的方法
+          this.$axios.post("addrole.action",params).then(function (result) {  //成功  执行then里面的方法
 
-        if(result.data.code=="1"){
-          _this.$message({
-            message: result.data.msg,
-            type: 'success'
+            if(result.data.code=="1"){
+              _this.$message({
+                message: result.data.msg,
+                type: 'success'
+              });
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+            }
+            _this.getrole();
+
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
           });
-        }else if(result.data.code=="0"){
-          _this.$message.error(result.data.msg);
+          _this.addroledialog=false
+        } else {
+          console.log('error submit!!');
+          return false;
         }
-        _this.getrole();
-
-
-      }).catch(function (error) { //失败 执行catch方法
-        console.log(error)
       });
-      _this.addroledialog=false
     },
     //把编辑数据传到对话框
     updaterole1(row){
@@ -210,30 +228,37 @@ export default {
       this.updateform.updaterolename=row.rolename;
     },
     //编辑角色名
-    updaterole2(){
-      var _this = this;
-      var params = new URLSearchParams();
-      params.append("roleid",_this.updateform.updateroleid);
-      params.append("rolename",_this.updateform.updaterolename);
+    updaterole2(formName){
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var _this = this;
+          var params = new URLSearchParams();
+          params.append("roleid",_this.updateform.updateroleid);
+          params.append("rolename",_this.updateform.updaterolename);
 
-      this.$axios.post("updaterole.action",params).then(function (result) {  //成功  执行then里面的方法
+          this.$axios.post("updaterole.action",params).then(function (result) {  //成功  执行then里面的方法
 
-        if(result.data.code=="1"){
-          _this.$message({
-            message: result.data.msg,
-            type: 'success'
+            if(result.data.code=="1"){
+              _this.$message({
+                message: result.data.msg,
+                type: 'success'
+              });
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+            }
+
+            _this.getrole();
+
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
           });
-        }else if(result.data.code=="0"){
-          _this.$message.error(result.data.msg);
+          _this.updateroledialog=false
+        } else {
+          console.log('error submit!!');
+          return false;
         }
-
-        _this.getrole();
-
-
-      }).catch(function (error) { //失败 执行catch方法
-        console.log(error)
       });
-      _this.updateroledialog=false
     },
     //复选框选中
     selectionchange(val){
