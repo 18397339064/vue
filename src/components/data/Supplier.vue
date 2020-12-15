@@ -1,18 +1,18 @@
 <template>
-  <div id="app">
+  <div id="app" style="margin-top: -10px">
     <el-row>
       <el-button type="success" round @click="addsupplierdialog = true">添加</el-button>
 
       <!--添加对话框-->
       <el-dialog title="添加供应商" :visible.sync="addsupplierdialog" width="40%" center>
-        <el-form :model="addform" label-width="80px">
-          <el-form-item label="供应商名称">
+        <el-form :model="addform" label-width="80px" ref="addformref" :rules="addforms">
+          <el-form-item label="供应商名" prop="supname">
             <el-input v-model="addform.supname"></el-input>
           </el-form-item>
-          <el-form-item label="供应商联系人">
+          <el-form-item label="联系人" prop="suppeople">
             <el-input v-model="addform.suppeople"></el-input>
           </el-form-item>
-          <el-form-item label="供应商联系电话">
+          <el-form-item label="联系电话" prop="supphone">
             <el-input v-model="addform.supphone"></el-input>
           </el-form-item>
 
@@ -34,14 +34,14 @@
               <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="供应商地址">
+          <el-form-item label="地址" prop="supaddress">
             <el-input v-model="addform.supaddress"></el-input>
           </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addsupplierdialog = false">取 消</el-button>
-          <el-button type="primary" @click="add">确 定</el-button>
+          <el-button type="primary" @click="add('addformref')">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -53,9 +53,8 @@
       </el-popconfirm>
     </el-row>
     <br>
-    <el-input placeholder="请输入供应商名称" clearable style="width: 300px;margin-right: 1100px" v-model="supname">
+    <el-input placeholder="请输入供应商名称" clearable style="width: 300px;margin-right: 1100px" v-model="supname" @change="query">
       <template slot="prepend">商品名</template>
-      <el-button slot="append" icon="el-icon-search" @click="query"></el-button>
     </el-input>
     <el-table
       :data="supplier"
@@ -114,15 +113,15 @@
 
     <!--修改对话框-->
     <el-dialog title="编辑供应商" :visible.sync="updatesupplierdialog" width="40%" center>
-      <el-form :model="updateform" label-width="80px">
-        <el-form-item label="供应商名称">
+      <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
+        <el-form-item label="供应商名" prop="supname">
           <el-input v-model="updateform.supname"></el-input>
         </el-form-item>
 
-        <el-form-item label="供应商联系人">
+        <el-form-item label="联系人" prop="suppeople">
           <el-input v-model="updateform.suppeople"></el-input>
         </el-form-item>
-        <el-form-item label="供应商联系电话">
+        <el-form-item label="联系电话" prop="supphone">
           <el-input v-model="updateform.supphone"></el-input>
         </el-form-item>
         <el-form-item label="省">
@@ -143,14 +142,14 @@
             <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="供应商地址">
+        <el-form-item label="地址" prop="supaddress">
           <el-input v-model="updateform.supaddress"></el-input>
         </el-form-item>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updatesupplierdialog = false">取 消</el-button>
-        <el-button type="primary" @click="update2">确 定</el-button>
+        <el-button type="primary" @click="update2('updateformref')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -173,8 +172,25 @@
             supname: '',
             suppeople:'',
             supphone:'',
-            supaddress:'',
-
+            supaddress:''
+          },
+          addforms:{
+            supname:[
+              { required: true, message: "供应商名不能为空", trigger: "blur" },
+              { min: 5, max: 10, message: "长度在 5 到 10 个字符", trigger: "blur" }
+            ],
+            suppeople:[
+              { required: true, message: "供应商联系人不能为空", trigger: "blur" },
+              {pattern: /^[\u4E00-\u9FA5]+$/,message: '联系人只能为中文' }
+            ],
+            supphone:[
+              { required: true, message: "电话号码不能为空", trigger: "blur" },
+              {pattern:/^1[0-9]\d{9}$/,message: '请输入正确的11位手机号码' }
+            ],
+            supaddress:[
+              { required: true, message: "供应商地址不能为空", trigger: "blur" },
+              {pattern: /^[\u4E00-\u9FA5]+$/,message: '地址只能为中文' }
+            ]
           },
           updatesupplierdialog:false,
           updateform:{
@@ -182,8 +198,25 @@
             supname: '',
             suppeople:'',
             supphone:'',
-            supaddress:'',
-
+            supaddress:''
+          },
+          updateforms:{
+            supname:[
+              { required: true, message: "供应商名不能为空", trigger: "blur" },
+              { min: 5, max: 10, message: "长度在 5 到 10 个字符", trigger: "blur" }
+            ],
+            suppeople:[
+              { required: true, message: "供应商联系人不能为空", trigger: "blur" },
+              {pattern: /^[\u4E00-\u9FA5]+$/,message: '联系人只能为中文' }
+            ],
+            supphone:[
+              { required: true, message: "电话号码不能为空", trigger: "blur" },
+              {pattern:/^1[0-9]\d{9}$/,message: '请输入正确的11位手机号码' }
+            ],
+            supaddress:[
+              { required: true, message: "供应商地址不能为空", trigger: "blur" },
+              {pattern: /^[\u4E00-\u9FA5]+$/,message: '地址只能为中文' }
+            ]
           },
           selectid:"", //复选框选中的id
           dialogImageUrl: '',
@@ -263,32 +296,43 @@
           this.getData()
         },
         //添加角色
-        add(){
-          var _this = this;
-          var params = new URLSearchParams();
+        add(formName){
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              var _this = this;
+              var params = new URLSearchParams();
 
-          params.append("supname",_this.addform.supname);
-          params.append("suppeople",_this.addform.suppeople);
-          params.append("supphone",_this.addform.supphone);
-          params.append("supaddress",_this.addform.supaddress);
-
-
-          this.$axios.post("addSupplier.action",params).then(function (result) {  //成功  执行then里面的方法
-
-            _this.$message({
-              message: result.data.msg,
-              type: 'success'
-            });
-            _this.getData();
+              params.append("supname",_this.addform.supname);
+              params.append("suppeople",_this.addform.suppeople);
+              params.append("supphone",_this.addform.supphone);
+              params.append("supaddress",_this.addform.supaddress);
 
 
-          }).catch(function (error) { //失败 执行catch方法
-            console.log(error)
+              this.$axios.post("addSupplier.action",params).then(function (result) {  //成功  执行then里面的方法
+
+                _this.$message({
+                  message: result.data.msg,
+                  type: 'success'
+                });
+                _this.getData();
+
+
+              }).catch(function (error) { //失败 执行catch方法
+                console.log(error)
+              });
+              _this.addsupplierdialog=false
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
           });
-          _this.addsupplierdialog=false
+
         },
         //把编辑数据传到对话框
         update1(row){
+          this.pid=0
+           this.cid=0
+            this.aid=0
           console.log(row)
 
           this.updatesupplierdialog=true;
@@ -300,30 +344,37 @@
 
         },
         //编辑角色名
-        update2(){
-          var _this = this;
-          var params = new URLSearchParams();
-          params.append("supid",_this.updateform.supid);
-          params.append("supname",_this.updateform.supname);
-          params.append("suppeople",_this.updateform.suppeople);
-          params.append("supphone",_this.updateform.supphone);
-          params.append("supaddress",_this.updateform.supaddress);
+        update2(formName){
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              var _this = this;
+              var params = new URLSearchParams();
+              params.append("supid",_this.updateform.supid);
+              params.append("supname",_this.updateform.supname);
+              params.append("suppeople",_this.updateform.suppeople);
+              params.append("supphone",_this.updateform.supphone);
+              params.append("supaddress",_this.updateform.supaddress);
 
 
-          this.$axios.post("updSupplier.action",params).then(function (result) {  //成功  执行then里面的方法
+              this.$axios.post("updSupplier.action",params).then(function (result) {  //成功  执行then里面的方法
 
-            _this.$message({
-              message: result.data.msg,
-              type: 'success'
-            });
+                _this.$message({
+                  message: result.data.msg,
+                  type: 'success'
+                });
 
-            _this.getData();
+                _this.getData();
 
 
-          }).catch(function (error) { //失败 执行catch方法
-            console.log(error)
+              }).catch(function (error) { //失败 执行catch方法
+                console.log(error)
+              });
+              _this.updatesupplierdialog=false
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
           });
-          _this.updatesupplierdialog=false
         },
         //复选框选中
         selectionchange(val){
@@ -339,7 +390,6 @@
           var _this = this;
 
           var params = new URLSearchParams();
-          alert(_this.selectid);
           params.append("ids", _this.selectid);
 
           this.$axios.post("delSupplierPL.action",params)

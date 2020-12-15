@@ -24,7 +24,9 @@
   import Category from '../data/Category.vue'
   import Staff from "../data/Staff.vue"
   import StaffRole from "../data/StaffRole.vue"
-  import WareHouse from "../data/WareHouse.vue";
+  import WareHouse from "../data/WareHouse.vue"
+  import Supplier from "../data/Supplier";
+  import Commodity from "../data/Commodity";
   export default {
     name: "right",
     components:{
@@ -35,7 +37,9 @@
       category:Category,
       staff:Staff,
       staffrole:StaffRole,
-      warehouse:WareHouse
+      warehouse:WareHouse,
+      supplier:Supplier,
+      commodity:Commodity
     },
     data() {
       return {

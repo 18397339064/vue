@@ -58,6 +58,13 @@
       handleClose(key, keyPath) {
         console.log(key, keyPath);
       }
+    },
+    created() {   //钩子函数  组件创建好后，去浏览器获取登录成功的用户名，如果没有，跳转登录页面
+      var staffname = sessionStorage.getItem("staffname");
+      if (staffname == undefined || staffname == null || staffname == '') {
+        this.$router.push("/stafflogin");
+      }
+
     }
   }
 </script>
