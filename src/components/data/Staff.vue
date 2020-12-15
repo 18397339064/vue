@@ -219,10 +219,9 @@
 
         this.$axios.post("querystaffcount.action",params).then(function (result) {  //成功  执行then里面的方法
           _this.staff = result.data.rows;
-
           //计算总页数
           _this.total=result.data.total;
-          _this.totalpage=_this.total%5==0?_this.total/5:Math.floor(_this.total/5)+1
+          _this.totalpage=_this.total%_this.size==0?_this.total/_this.size:Math.floor(_this.total/_this.size)+1
 
         }).catch(function (error) { //失败 执行catch方法
           console.log(error)

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="margin-top: -10px">
     <div style="width: 400px">
       <el-table
         :data="role"
