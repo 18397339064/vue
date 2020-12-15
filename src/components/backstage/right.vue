@@ -1,7 +1,7 @@
 <template>
   <div id="tabs">
 
-    <el-tabs v-model="editableTabsValue" class="el-tabs" type="border-card" closable @tab-remove="removeTab">
+    <el-tabs v-model="editableTabsValue" type="border-card" closable @tab-remove="removeTab">
       <el-tab-pane
         v-for="(item, index) in editableTabs"
         :key="item.name"
@@ -22,9 +22,9 @@
   import User from '../data/User.vue'
   import RoleMenu from '../data/RoleMenu.vue'
   import Category from '../data/Category.vue'
-  import Staff from "../data/Staff"
-  import StaffRole from "../data/StaffRole"
-  import Commodity from "../data/Commodity";
+  import Staff from "../data/Staff.vue"
+  import StaffRole from "../data/StaffRole.vue"
+  import WareHouse from "../data/WareHouse.vue";
   export default {
     name: "right",
     components:{
@@ -35,7 +35,7 @@
       category:Category,
       staff:Staff,
       staffrole:StaffRole,
-      commodity:Commodity
+      warehouse:WareHouse
     },
     data() {
       return {
@@ -84,10 +84,6 @@
   }
 </script>
 
-<style>
-
-/*.el-tabs{
-  max-height: 530px;
-}*/
+<style scoped>
 
 </style>
