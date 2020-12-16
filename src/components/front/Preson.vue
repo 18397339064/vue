@@ -47,6 +47,12 @@
                   <el-table-column
                     prop="commodity.comimg"
                     label="商品图">
+                    <template slot-scope="scope">
+                      <el-popover placement="top-start" trigger="hover">
+                        <img :src="scope.row.commodity.comimg" style="width: 150px;height: 150px">
+                        <img slot="reference" :src="'../'+scope.row.commodity.comimg" style="width: 100px;height: 100px">
+                      </el-popover>
+                    </template>
                   </el-table-column>
                   <el-table-column
                     prop="ordercount"
@@ -161,12 +167,12 @@
           return {
             tabPosition: 'left',
             updateform: {
-              updateuserid:0,
-              updateuseraccount: '',
-              updateuserpwd:'',
-              updateusername:'',
-              updateusersex:'男',
-              updateuserphone:''
+              updateuserid:sessionStorage.getItem("userid"),
+              updateuseraccount:sessionStorage.getItem("useraccount"),
+              updateuserpwd:sessionStorage.getItem("userpwd"),
+              updateusername:sessionStorage.getItem("username"),
+              updateusersex:sessionStorage.getItem("usersex"),
+              updateuserphone:sessionStorage.getItem("userphone")
             },
             updateforms:{
               updateuserpwd:[
@@ -233,7 +239,30 @@
         updateuser(formName){
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              alert('submit!');
+              var _this = this;
+              var params = new URLSearchParams();
+              params.append("userid",_this.updateform.updateuserid);
+              params.append("userpwd",_this.updateform.updateuserpwd);
+              params.append("username",_this.updateform.updateusername);
+              params.append("userphone",_this.updateform.updateuserphone);
+
+
+              this.$axios.post("updateuser.action",params).then(function (result) {  //成功  执行then里面的方法
+
+                if(result.data.code=="1"){
+                  _this.$message({
+                    message: result.data.msg,
+                    type: 'success'
+                  });
+
+                }else if(result.data.code=="0"){
+                  _this.$message.error(result.data.msg);
+                }
+
+
+              }).catch(function (error) { //失败 执行catch方法
+                console.log(error)
+              });
             } else {
               console.log('error submit!!');
               return false;
