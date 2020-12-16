@@ -112,11 +112,11 @@
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
-          <el-tab-pane>
+          <el-tab-pane v-if="usersh==0">
             <span slot="label"><i class="el-icon-location"></i> 注册商户</span>
             注册商户
           </el-tab-pane>
-          <el-tab-pane>
+          <el-tab-pane v-else-if="usersh==1">
             <span slot="label"><i class="el-icon-location"></i> 商户管理</span>
             商户管理
             <el-tabs type="border-card" style="margin: 20px;">
@@ -188,6 +188,7 @@
             total:0,  //总条目数
             size:5,  //每页显示多少条
             currentpage:1,
+            usersh:sessionStorage.getItem("usersh")
           }
       },
       methods:{

@@ -35,21 +35,25 @@
           }
         },
       methods:{
-        stafflogin(){
+        stafflogin() {
           var _this = this;
           var params = new URLSearchParams();
-          params.append("staffaccount",_this.loginstaffaccount);
-          params.append("staffpwd",_this.loginstaffpwd);
+          params.append("staffaccount", _this.loginstaffaccount);
+          params.append("staffpwd", _this.loginstaffpwd);
 
-          this.$axios.post("loginstaff.action",params).then(function (result) {  //成功  执行then里面的方法
-            if(result.data.code=="1"){
+          this.$axios.post("loginstaff.action", params).then(function (result) {  //成功  执行then里面的方法
+            if (result.data.code == "1") {
               _this.$message({
                 message: result.data.msg,
                 type: 'success'
               });
+              //将登录成功的员工名存入store中
+              sessionStorage.setItem("staffname", result.data.staffname)
+              sessionStorage.setItem("staffid", result.data.staffid)
+
               _this.$router.push("/backstage")
 
-            }else if(result.data.code=="0"){
+            } else if (result.data.code == "0") {
               _this.$message.error(result.data.msg);
             }
 
