@@ -27,6 +27,8 @@
   import WareHouse from "../data/WareHouse.vue"
   import Supplier from "../data/Supplier";
   import Commodity from "../data/Commodity";
+  import ShangHu from "../data/ShangHu";
+  import ShangHuShenHe from "../data/ShangHuShenHe";
   export default {
     name: "right",
     components:{
@@ -39,7 +41,9 @@
       staffrole:StaffRole,
       warehouse:WareHouse,
       supplier:Supplier,
-      commodity:Commodity
+      commodity:Commodity,
+      shanghu:ShangHu,
+      shanghushenhe:ShangHuShenHe
     },
     data() {
       return {
