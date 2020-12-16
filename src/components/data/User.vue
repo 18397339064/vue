@@ -5,48 +5,27 @@
 
       <!--添加对话框-->
       <el-dialog title="添加用户" :visible.sync="adduserdialog" width="40%" center>
-        <el-form :model="addform" label-width="80px">
-          <el-form-item label="用户账号">
-            <el-input v-model="addform.adduseraccount"></el-input>
+        <el-form :model="addform" label-width="80px" ref="addformref" :rules="addforms">
+          <el-form-item label="用户账号" prop="adduseraccount">
+            <el-input v-model="addform.adduseraccount" @change="queryuseraccount"></el-input>
           </el-form-item>
-          <el-form-item label="用户密码">
+          <el-form-item label="用户密码" prop="adduserpwd">
             <el-input v-model="addform.adduserpwd"></el-input>
           </el-form-item>
-          <el-form-item label="用户姓名">
+          <el-form-item label="用户姓名" prop="addusername">
             <el-input v-model="addform.addusername"></el-input>
           </el-form-item>
           <el-form-item label="用户性别">
             <el-radio v-model="addform.addusersex" label="男">男</el-radio>
             <el-radio v-model="addform.addusersex" label="女">女</el-radio>
           </el-form-item>
-          <el-form-item label="用户电话">
+          <el-form-item label="用户电话" prop="adduserphone">
             <el-input v-model="addform.adduserphone"></el-input>
-          </el-form-item>
-          <el-form-item label="省">
-            <el-select v-model="pid" @change="getcity">
-              <el-option :value="0" label="---请选择省---"></el-option>
-              <el-option v-for="p in province" :value="p.provinceid" :label="p.provincename"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="市">
-            <el-select v-model="cid" @change="getarea">
-              <el-option :value="0" label="---请选择市---"></el-option>
-              <el-option v-for="c in city" :value="c.cityid" :label="c.cityname"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="区">
-            <el-select v-model="aid" @change="getareaname">
-              <el-option :value="0" label="---请选择区---"></el-option>
-              <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="用户地址">
-            <el-input v-model="addform.adduseraddress"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="adduserdialog = false">取 消</el-button>
-          <el-button type="primary" @click="adduser">确 定</el-button>
+          <el-button type="primary" @click="adduser('addformref')">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -61,14 +40,17 @@
     <div>
       <el-row>
         <el-col :span="5">
-          <el-input placeholder="请输入姓名" clearable style="width: 300px;margin-right: 1100px" v-model="username" @change="query">
+          <el-input placeholder="请输入姓名" clearable style="width: 280px;margin-right: 1100px" v-model="username" @change="query">
             <template slot="prepend">姓名</template>
           </el-input>
         </el-col>
         <el-col :span="7">
-          <div style="padding-top: 10px;padding-left: 100px">
-            <el-radio v-model="radio" label="男" @change="query">男</el-radio>
-            <el-radio v-model="radio" label="女" @change="query">女</el-radio>
+          <div style="margin-left: 100px">
+            <el-select v-model="radio" @change="query">
+              <el-option value="" label="---请选择性别---"></el-option>
+              <el-option value="男" label="男"></el-option>
+              <el-option value="女" label="女"></el-option>
+            </el-select>
           </div>
         </el-col>
       </el-row>
@@ -106,10 +88,6 @@
         label="用户电话">
       </el-table-column>
       <el-table-column
-        prop="useraddress"
-        label="用户地址">
-      </el-table-column>
-      <el-table-column
         prop="usersh"
         label="是否商户">
       </el-table-column>
@@ -141,48 +119,27 @@
     </el-pagination>
     <!--修改对话框-->
     <el-dialog title="编辑用户" :visible.sync="updateuserdialog" width="40%" center>
-      <el-form :model="updateform" label-width="80px">
+      <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
         <el-input v-model="updateform.updateuserid" type="hidden"></el-input>
         <el-form-item label="用户账号">
           <el-input v-model="updateform.updateuseraccount" readonly></el-input>
         </el-form-item>
-        <el-form-item label="用户密码">
+        <el-form-item label="用户密码" prop="updateuserpwd">
           <el-input v-model="updateform.updateuserpwd"></el-input>
         </el-form-item>
-        <el-form-item label="用户姓名">
+        <el-form-item label="用户姓名" prop="updateusername">
           <el-input v-model="updateform.updateusername"></el-input>
         </el-form-item>
         <el-form-item label="用户性别">
           <el-input v-model="updateform.updateusersex" readonly></el-input>
         </el-form-item>
-        <el-form-item label="用户电话">
+        <el-form-item label="用户电话" prop="updateuserphone">
           <el-input v-model="updateform.updateuserphone"></el-input>
-        </el-form-item>
-        <el-form-item label="省">
-          <el-select v-model="pid" @change="getcity">
-            <el-option :value="0" label="---请选择省---"></el-option>
-            <el-option v-for="p in province" :value="p.provinceid" :label="p.provincename"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="市">
-          <el-select v-model="cid" @change="getarea">
-            <el-option :value="0" label="---请选择市---"></el-option>
-            <el-option v-for="c in city" :value="c.cityid" :label="c.cityname"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="区">
-          <el-select v-model="aid" @change="getareaname">
-            <el-option :value="0" label="---请选择区---"></el-option>
-            <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="用户地址">
-          <el-input v-model="updateform.updateuseraddress"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updateuserdialog = false">取 消</el-button>
-        <el-button type="primary" @click="updateuser2">确 定</el-button>
+        <el-button type="primary" @click="updateuser2('updateformref')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -207,8 +164,25 @@
           adduserpwd:'',
           addusername:'',
           addusersex:'男',
-          adduserphone:'',
-          adduseraddress:''
+          adduserphone:''
+        },
+        addforms:{
+          adduseraccount:[
+            { required: true, message: "账号不能为空", trigger: "blur" },
+            { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          ],
+          adduserpwd:[
+            { required: true, message: "密码不能为空", trigger: "blur" },
+            { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          ],
+          addusername:[
+            { required: true, message: "姓名不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '姓名只能为中文' }
+          ],
+          adduserphone:[
+            { required: true, message: "电话号码不能为空", trigger: "blur" },
+            {pattern:/^1[0-9]\d{9}$/,message: '请输入正确的11位手机号码' }
+          ]
         },
         updateuserdialog:false,
         updateform: {
@@ -217,16 +191,23 @@
           updateuserpwd:'',
           updateusername:'',
           updateusersex:'男',
-          updateuserphone:'',
-          updateuseraddress:''
+          updateuserphone:''
         },
-        selectid:"", //复选框选中的id
-        province:[],
-        city:[],
-        area:[],
-        pid:0,
-        cid:0,
-        aid:0
+        updateforms:{
+          updateuserpwd:[
+            { required: true, message: "密码不能为空", trigger: "blur" },
+            { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          ],
+          updateusername:[
+            { required: true, message: "姓名不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '姓名只能为中文' }
+          ],
+          updateuserphone:[
+            { required: true, message: "电话号码不能为空", trigger: "blur" },
+            {pattern:/^1[0-9]\d{9}$/,message: '请输入正确的11位手机号码' }
+          ]
+        },
+        selectid:"" //复选框选中的id
       }
     },
     methods:{
@@ -299,34 +280,41 @@
         this.getuser()
       },
       //添加数据
-      adduser(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("useraccount",_this.addform.adduseraccount);
-        params.append("userpwd",_this.addform.adduserpwd);
-        params.append("username",_this.addform.addusername);
-        params.append("usersex",_this.addform.addusersex);
-        params.append("userphone",_this.addform.adduserphone);
-        params.append("useraddress",_this.addform.adduseraddress);
+      adduser(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            var params = new URLSearchParams();
+            params.append("useraccount",_this.addform.adduseraccount);
+            params.append("userpwd",_this.addform.adduserpwd);
+            params.append("username",_this.addform.addusername);
+            params.append("usersex",_this.addform.addusersex);
+            params.append("userphone",_this.addform.adduserphone);
 
-        this.$axios.post("adduser.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("adduser.action",params).then(function (result) {  //成功  执行then里面的方法
 
-          if(result.data.code=="1"){
-            _this.$message({
-              message: result.data.msg,
-              type: 'success'
+              if(result.data.code=="1"){
+                _this.$message({
+                  message: result.data.msg,
+                  type: 'success'
+                });
+
+                _this.getuser();
+              }else if(result.data.code=="0"){
+                _this.$message.error(result.data.msg);
+              }
+
+
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
             });
-
-            _this.getuser();
-          }else if(result.data.code=="0"){
-            _this.$message.error(result.data.msg);
+            _this.adduserdialog=false
+          } else {
+            console.log('error submit!!');
+            return false;
           }
-
-
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
         });
-        _this.adduserdialog=false
+
       },
       //把编辑数据传到对话框
       updateuser1(row){
@@ -338,41 +326,47 @@
         this.updateform.updateusername=row.username;
         this.updateform.updateusersex=row.usersex;
         this.updateform.updateuserphone=row.userphone;
-        this.updateform.updateuseraddress=row.useraddress;
 
        this.pid=0;
        this.cid=0;
        this.aid=0;
       },
       //编辑数据
-      updateuser2(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("userid",_this.updateform.updateuserid);
-        params.append("userpwd",_this.updateform.updateuserpwd);
-        params.append("username",_this.updateform.updateusername);
-        params.append("userphone",_this.updateform.updateuserphone);
-        params.append("useraddress",_this.updateform.updateuseraddress);
+      updateuser2(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            var params = new URLSearchParams();
+            params.append("userid",_this.updateform.updateuserid);
+            params.append("userpwd",_this.updateform.updateuserpwd);
+            params.append("username",_this.updateform.updateusername);
+            params.append("userphone",_this.updateform.updateuserphone);
 
 
-        this.$axios.post("updateuser.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("updateuser.action",params).then(function (result) {  //成功  执行then里面的方法
 
-          if(result.data.code=="1"){
-            _this.$message({
-              message: result.data.msg,
-              type: 'success'
+              if(result.data.code=="1"){
+                _this.$message({
+                  message: result.data.msg,
+                  type: 'success'
+                });
+
+                _this.getuser();
+              }else if(result.data.code=="0"){
+                _this.$message.error(result.data.msg);
+              }
+
+
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
             });
-
-            _this.getuser();
-          }else if(result.data.code=="0"){
-            _this.$message.error(result.data.msg);
+            _this.updateuserdialog=false
+          } else {
+            console.log('error submit!!');
+            return false;
           }
-
-
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
         });
-        _this.updateuserdialog=false
+
       },
       //复选框选中
       selectionchange(val){
@@ -410,75 +404,30 @@
         });
 
       },
-      //查询省
-      getprovince:function () {
-        var _this = this;
-        this.$axios.post("queryprovince.action")
-          .then(function (result) {
-            _this.province=result.data;
-          })
-          .catch(function (error) {
-            console.log(error)
-          });
-      },
-      //查询市
-      getcity:function(){
+      queryuseraccount(){
         var _this = this;
         var params = new URLSearchParams();
-        params.append("pid",_this.pid);
+        params.append("useraccount",_this.addform.adduseraccount);
 
-        this.$axios.post("querycitybypid.action",params)
+        this.$axios.post("queryuseraccount.action",params)
           .then(function (result) {
-            /*console.log(result.data)*/
-            _this.city=result.data;
-            _this.province.forEach((item)=>{
-              if(item.provinceid==_this.pid){
-                _this.addform.adduseraddress=item.provincename
-                _this.updateform.updateuseraddress=item.provincename
-              }
-            })
-
+            if(result.data.code=="1"){
+              _this.$message({
+                message: result.data.msg,
+                type: 'success'
+              });
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+              _this.addform.adduseraccount='';
+            }
           })
           .catch(function (error) {
             console.log(error)
           });
-
-      },
-      //查询区
-      getarea:function(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("cid",_this.cid);
-
-        this.$axios.post("queryareabycid.action",params)
-          .then(function (result) {
-            _this.area = result.data;
-
-            _this.city.forEach((item) => {
-              if (item.cityid == _this.cid) {
-                _this.addform.adduseraddress = _this.addform.adduseraddress + item.cityname
-                _this.updateform.updateuseraddress = _this.updateform.updateuseraddress + item.cityname
-              }
-            })
-          })
-          .catch(function (error) {
-            console.log(error)
-          });
-      },
-      //获取区的名字加载到地址输入框中
-      getareaname(){
-        var _this=this;
-        _this.area.forEach((item) => {
-          if (item.areaid == _this.aid) {
-            _this.addform.adduseraddress = _this.addform.adduseraddress + item.areaname
-            _this.updateform.updateuseraddress = _this.updateform.updateuseraddress + item.areaname
-          }
-        })
       }
     },
     created:function(){
       this.getuser();
-      this.getprovince();
     }
   }
 

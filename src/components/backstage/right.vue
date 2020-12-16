@@ -22,7 +22,13 @@
   import User from '../data/User.vue'
   import RoleMenu from '../data/RoleMenu.vue'
   import Category from '../data/Category.vue'
-  import Staff from "../data/Staff";
+  import Staff from "../data/Staff.vue"
+  import StaffRole from "../data/StaffRole.vue"
+  import WareHouse from "../data/WareHouse.vue"
+  import Supplier from "../data/Supplier";
+  import Commodity from "../data/Commodity";
+  import ShangHu from "../data/ShangHu";
+  import ShangHuShenHe from "../data/ShangHuShenHe";
   export default {
     name: "right",
     components:{
@@ -31,7 +37,13 @@
       user:User,
       rolemenu:RoleMenu,
       category:Category,
-      staff:Staff
+      staff:Staff,
+      staffrole:StaffRole,
+      warehouse:WareHouse,
+      supplier:Supplier,
+      commodity:Commodity,
+      shanghu:ShangHu,
+      shanghushenhe:ShangHuShenHe
     },
     data() {
       return {

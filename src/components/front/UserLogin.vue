@@ -56,6 +56,9 @@
                 message: result.data.msg,
                 type: 'success'
               });
+              //将登录成功的用户名存入store中
+              sessionStorage.setItem("username",result.data.username)
+              sessionStorage.setItem("usersh",result.data.usersh)
 
             }else if(result.data.code=="0"){
               _this.$message.error(result.data.msg);
