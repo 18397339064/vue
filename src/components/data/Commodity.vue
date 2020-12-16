@@ -72,9 +72,8 @@
       </el-popconfirm>
     </el-row>
     <br>
-    <el-input placeholder="请输入商品名" clearable style="width: 300px;margin-right: 1100px" v-model="comname">
+    <el-input placeholder="请输入商品名" clearable style="width: 300px;margin-right: 1100px" v-model="comname" @change="query">
       <template slot="prepend">商品名</template>
-      <el-button slot="append" icon="el-icon-search" @click="query"></el-button>
     </el-input>
     <el-table
       :data="commodity"
