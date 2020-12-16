@@ -57,7 +57,12 @@
                 type: 'success'
               });
               //将登录成功的用户名存入store中
+              sessionStorage.setItem("userid",result.data.userid)
+              sessionStorage.setItem("useraccount",result.data.useraccount)
+              sessionStorage.setItem("userpwd",result.data.userpwd)
               sessionStorage.setItem("username",result.data.username)
+              sessionStorage.setItem("usersex",result.data.usersex)
+              sessionStorage.setItem("userphone",result.data.userphone)
               sessionStorage.setItem("usersh",result.data.usersh)
 
             }else if(result.data.code=="0"){
