@@ -29,6 +29,7 @@
   import Commodity from "../data/Commodity";
   import ShangHu from "../data/ShangHu";
   import ShangHuShenHe from "../data/ShangHuShenHe";
+  import Stock from "../data/Stock";
   export default {
     name: "right",
     components:{
@@ -43,7 +44,8 @@
       supplier:Supplier,
       commodity:Commodity,
       shanghu:ShangHu,
-      shanghushenhe:ShangHuShenHe
+      shanghushenhe:ShangHuShenHe,
+      stock:Stock
     },
     data() {
       return {
