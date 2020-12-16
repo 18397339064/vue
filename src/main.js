@@ -19,6 +19,6 @@ Vue.prototype.$axios = Axios
 import app from "./app.vue";
 new Vue({
   el: '#app',
-  render: h => h(Backstage),
+  render: h => h(NavMenu),
   router:Router
 })

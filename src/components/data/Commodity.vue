@@ -1,15 +1,15 @@
 <template>
-  <div id="app">
+  <div id="app" style="margin-top: -10px">
     <el-row>
       <el-button type="success" round @click="addcommoditydialog = true">添加</el-button>
 
       <!--添加对话框-->
       <el-dialog title="添加商品" :visible.sync="addcommoditydialog" width="40%" center>
-        <el-form :model="addform" label-width="80px">
-          <el-form-item label="商品名">
+        <el-form :model="addform" label-width="80px" ref="addformref" :rules="addforms">
+          <el-form-item label="商品名" prop="comname">
             <el-input v-model="addform.comname"></el-input>
           </el-form-item>
-          <el-form-item label="商品分类">
+          <el-form-item label="商品分类" prop="ctid">
             <el-select v-model="addform.ctid" >
               <el-option :value="0" label="---请选择商品分类---"></el-option>
               <el-option v-for="c in category" :value="c.ctid" :label="c.ctname"></el-option>
@@ -27,10 +27,10 @@
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
           </el-form-item>
-          <el-form-item label="商品价格">
-            <el-input v-model="addform.comprice"></el-input>
+          <el-form-item label="商品价格" prop="comprice">
+            <el-input v-model.number="addform.comprice"></el-input>
           </el-form-item>
-          <el-form-item label="规格">
+          <el-form-item label="规格" prop="comsperifications">
             <el-input v-model="addform.comsperifications"></el-input>
           </el-form-item>
           <el-form-item label="省">
@@ -51,16 +51,13 @@
               <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="产地">
+          <el-form-item label="产地" prop="complace">
             <el-input v-model="addform.complace"></el-input>
-          </el-form-item>
-          <el-form-item label="总销售">
-            <el-input v-model="addform.comnum"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addcommoditydialog = false">取 消</el-button>
-          <el-button type="primary" @click="add">确 定</el-button>
+          <el-button type="primary" @click="add('addformref')">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -149,11 +146,11 @@
 
     <!--修改对话框-->
     <el-dialog title="编辑商品" :visible.sync="updatecommoditydialog" width="40%" center>
-      <el-form :model="updateform" label-width="80px">
-        <el-form-item label="商品名">
+      <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
+        <el-form-item label="商品名" prop="comname">
           <el-input v-model="updateform.comname"></el-input>
         </el-form-item>
-        <el-form-item label="商品分类">
+        <el-form-item label="商品分类" prop="ctid">
           <el-select v-model="updateform.ctid" >
             <el-option :value="0" label="---请选择商品分类---"></el-option>
             <el-option v-for="c in category" :value="c.ctid" :label="c.ctname"></el-option>
@@ -172,10 +169,10 @@
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
         </el-form-item>
-        <el-form-item label="商品价格">
-          <el-input v-model="updateform.comprice"></el-input>
+        <el-form-item label="商品价格" prop="comprice">
+          <el-input v-model.number="updateform.comprice"></el-input>
         </el-form-item>
-        <el-form-item label="规格">
+        <el-form-item label="规格" prop="comsperifications">
           <el-input v-model="updateform.comsperifications"></el-input>
         </el-form-item>
         <el-form-item label="省">
@@ -196,16 +193,13 @@
             <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="产地">
+        <el-form-item label="产地" prop="complace">
           <el-input v-model="updateform.complace"></el-input>
-        </el-form-item>
-        <el-form-item label="总销售">
-          <el-input v-model="updateform.comnum"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updatecommoditydialog = false">取 消</el-button>
-        <el-button type="primary" @click="update2">确 定</el-button>
+        <el-button type="primary" @click="update2('updateformref')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -234,6 +228,25 @@
           complace:'',
           comnum:0
         },
+        addforms:{
+          comname:[
+            { required: true, message: "商品名不能为空", trigger: "blur" }
+          ],
+          ctid:[
+            { required: true, message: '请选择商品类型', trigger: 'change' }
+          ],
+          comprice:[
+            { required: true, message: "商品价格不能为空"},
+            { type: 'number', message: '价格必须为数字值'}
+          ],
+          comsperifications:[
+            { required: true, message: "规格不能为空", trigger: "blur" }
+          ],
+          complace: [
+            { required: true, message: "产地不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '产地只能为中文' }
+          ]
+        },
         updatecommoditydialog:false,
         updateform:{
           comid:0,
@@ -244,6 +257,25 @@
           comsperifications:'',
           complace:'',
           comnum:0
+        },
+        updateforms:{
+          comname:[
+            { required: true, message: "商品名不能为空", trigger: "blur" }
+          ],
+          ctid:[
+            { required: true, message: '请选择商品类型', trigger: 'change' }
+          ],
+          comprice:[
+            { required: true, message: "商品价格不能为空", trigger: "blur" },
+            { type: 'number', message: '价格必须为数字值',trigger: "blur" }
+          ],
+          comsperifications:[
+            { required: true, message: "规格不能为空", trigger: "blur" }
+          ],
+          complace: [
+            { required: true, message: "产地不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '产地只能为中文' }
+          ]
         },
         selectid:"", //复选框选中的id
         dialogImageUrl: '',
@@ -321,40 +353,50 @@
         this.getData()
       },
       //添加角色
-      add(){
+      add(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
 
-        var _this = this;
-
-        let  formData = new FormData();
-        // formData.append("img",this.addform.img);
-        //将需要提交的表单数据 快速组装为H5定义的类型FormData
-        Object.keys(_this.addform).forEach((key) => {
-          formData.append(key, _this.addform[key]);
-        });
-
-        this.$axios({
-          method: 'post',
-          url: 'addCommodity.action',
-          data:formData,
-          headers: {
-            'Content-Type':'multipart/form-data'
-          }
-        }).then(function (result) {  //成功  执行then里面的方法
-
-            _this.$message({
-              message: result.data,
-              type: 'success'
+            let  formData = new FormData();
+            // formData.append("img",this.addform.img);
+            //将需要提交的表单数据 快速组装为H5定义的类型FormData
+            Object.keys(_this.addform).forEach((key) => {
+              formData.append(key, _this.addform[key]);
             });
-          _this.getData();
+
+            this.$axios({
+              method: 'post',
+              url: 'addCommodity.action',
+              data:formData,
+              headers: {
+                'Content-Type':'multipart/form-data'
+              }
+            }).then(function (result) {  //成功  执行then里面的方法
+
+              _this.$message({
+                message: result.data,
+                type: 'success'
+              });
+              _this.getData();
 
 
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
+            });
+            _this.addcommoditydialog=false
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
         });
-        _this.addcommoditydialog=false
+
       },
       //把编辑数据传到对话框
       update1(row){
+        this.pid=0
+        this.cid=0
+        this.aid=0
         console.log(row)
         this.updatecommoditydialog=true;
         this.updateform.comid=row.comid;
@@ -367,36 +409,44 @@
         this.updateform.comnum=row.comnum;
       },
       //编辑角色名
-      update2(){
-        var _this = this;
-        let  formData = new FormData();
-        // formData.append("img",this.addform.img);
-        //将需要提交的表单数据 快速组装为H5定义的类型FormData
-        Object.keys(_this.updateform).forEach((key) => {
-          formData.append(key, _this.updateform[key]);
-        });
-
-        this.$axios({
-          method: 'post',
-          url: 'updateCommodity.action',
-          data: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(function (result) {  //成功  执行then里面的方法
-
-            _this.$message({
-              message: result.data,
-              type: 'success'
+      update2(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            let  formData = new FormData();
+            // formData.append("img",this.addform.img);
+            //将需要提交的表单数据 快速组装为H5定义的类型FormData
+            Object.keys(_this.updateform).forEach((key) => {
+              formData.append(key, _this.updateform[key]);
             });
 
-          _this.getData();
+            this.$axios({
+              method: 'post',
+              url: 'updateCommodity.action',
+              data: formData,
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }).then(function (result) {  //成功  执行then里面的方法
+
+              _this.$message({
+                message: result.data,
+                type: 'success'
+              });
+
+              _this.getData();
 
 
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
+            });
+            _this.updatecommoditydialog=false
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
         });
-        _this.updatecommoditydialog=false
+
       },
       //复选框选中
       selectionchange(val){
