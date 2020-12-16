@@ -284,11 +284,14 @@
         this.$axios.post("deleteCommodity.action",params)
           .then(function (result) {  //成功  执行then里面的方法
 
+            if(result.data=="删除成功!"){
               _this.$message({
                 message: result.data,
                 type: 'success'
               });
-
+            }else{
+              _this.$message.error(result.data);
+            }
             _this.getData();  //删除操作做完，刷新数据
 
 
@@ -341,10 +344,14 @@
           }
         }).then(function (result) {  //成功  执行then里面的方法
 
+          if(result.data=="添加成功!"){
             _this.$message({
               message: result.data,
               type: 'success'
             });
+          }else{
+            _this.$message.error(result.data);
+          }
           _this.getData();
 
 
@@ -385,10 +392,14 @@
           }
         }).then(function (result) {  //成功  执行then里面的方法
 
+          if(result.data=="修改成功!"){
             _this.$message({
               message: result.data,
               type: 'success'
             });
+          }else{
+            _this.$message.error(result.data);
+          }
 
           _this.getData();
 
@@ -417,10 +428,14 @@
         this.$axios.post("deleteCommodity.action",params)
           .then(function (result) {  //成功  执行then里面的方法
 
+            if(result.data=="删除成功!"){
               _this.$message({
                 message: result.data,
                 type: 'success'
               });
+            }else{
+              _this.$message.error(result.data);
+            }
 
             _this.getData();  //删除操作做完，刷新数据
 
