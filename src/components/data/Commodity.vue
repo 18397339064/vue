@@ -10,22 +10,22 @@
             <el-input v-model="addform.comname"></el-input>
           </el-form-item>
           <el-form-item label="商品分类">
-            <el-select >
+            <el-select v-model="addform.ctid" >
               <el-option :value="0" label="---请选择商品分类---"></el-option>
-              <el-option ></el-option>
+              <el-option v-for="c in category" :value="c.ctid" :label="c.ctname"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="商品图片">
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove">
-              <i class="el-icon-plus"></i>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
+          <el-upload
+            action="https://jsonplaceholder.typicode.com/posts/"
+            list-type="picture-card"
+            :on-preview="handlePictureCardPreview"
+            :on-change="getFile">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
           </el-form-item>
           <el-form-item label="商品价格">
             <el-input v-model="addform.comprice"></el-input>
@@ -72,9 +72,8 @@
       </el-popconfirm>
     </el-row>
     <br>
-    <el-input placeholder="请输入商品名" clearable style="width: 300px;margin-right: 1100px" v-model="comname">
+    <el-input placeholder="请输入商品名" clearable style="width: 300px;margin-right: 1100px" v-model="comname" @change="query">
       <template slot="prepend">商品名</template>
-      <el-button slot="append" icon="el-icon-search" @click="query"></el-button>
     </el-input>
     <el-table
       :data="commodity"
@@ -101,7 +100,7 @@
         <template slot-scope="scope">
           <el-popover placement="top-start" trigger="hover">
             <img :src="scope.row.comimg" style="width: 150px;height: 150px">
-            <img slot="reference" :src="scope.row.comimg" style="width: 100px;height: 100px">
+            <img slot="reference" :src="'../'+scope.row.comimg" style="width: 100px;height: 100px">
           </el-popover>
         </template>
       </el-table-column>
@@ -155,16 +154,18 @@
           <el-input v-model="updateform.comname"></el-input>
         </el-form-item>
         <el-form-item label="商品分类">
-          <el-select >
+          <el-select v-model="updateform.ctid" >
             <el-option :value="0" label="---请选择商品分类---"></el-option>
-            <el-option ></el-option>
+            <el-option v-for="c in category" :value="c.ctid" :label="c.ctname"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="商品图片">
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="https://localhost.typicode.com/posts/"
             list-type="picture-card"
-            :on-preview="handlePictureCardPreview">
+            :on-preview="handlePictureCardPreview"
+            :on-change="getFile"
+          >
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible">
@@ -216,6 +217,7 @@
       data () {
           return {
         commodity: [],
+        category:[],
         pageindex:1,//当前显示页面
         totalpage:0,//总页面
         total:0,  //总条目数
@@ -226,7 +228,7 @@
         addform: {
           comname: '',
           ctid:0,
-          comimg:'',
+          fileImg:'',
           comprice:0,
           comsperifications:'',
           complace:'',
@@ -237,7 +239,7 @@
           comid:0,
           comname: '',
           ctid:0,
-          comimg:'',
+          fileImg:'',
           comprice:0,
           comsperifications:'',
           complace:'',
@@ -320,17 +322,24 @@
       },
       //添加角色
       add(){
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("comname",_this.addform.comname);
-        params.append("ctid",_this.addform.ctid);
-        params.append("fileImg",_this.addform.comimg);
-        params.append("comprice",_this.addform.comprice);
-        params.append("comsperifications",_this.addform.comsperifications);
-        params.append("complace",_this.addform.complace);
-        params.append("comnum",_this.addform.comnum);
 
-        this.$axios.post("addCommodity.action",params).then(function (result) {  //成功  执行then里面的方法
+        var _this = this;
+
+        let  formData = new FormData();
+        // formData.append("img",this.addform.img);
+        //将需要提交的表单数据 快速组装为H5定义的类型FormData
+        Object.keys(_this.addform).forEach((key) => {
+          formData.append(key, _this.addform[key]);
+        });
+
+        this.$axios({
+          method: 'post',
+          url: 'addCommodity.action',
+          data:formData,
+          headers: {
+            'Content-Type':'multipart/form-data'
+          }
+        }).then(function (result) {  //成功  执行then里面的方法
 
             _this.$message({
               message: result.data,
@@ -350,7 +359,7 @@
         this.updatecommoditydialog=true;
         this.updateform.comid=row.comid;
         this.updateform.comname=row.comname;
-        this.updateform.ctid=row.ctid;
+        this.updateform.ctid=row.category.ctid;
         this.updateform.comimg=row.comimg;
         this.updateform.comprice=row.comprice;
         this.updateform.comsperifications=row.comsperifications;
@@ -360,17 +369,21 @@
       //编辑角色名
       update2(){
         var _this = this;
-        var params = new URLSearchParams();
-        params.append("comid",_this.updateform.comid);
-        params.append("comname",_this.updateform.comname);
-        params.append("ctid",_this.updateform.ctid);
-        params.append("fileImg",_this.updateform.comimg);
-        params.append("comprice",_this.updateform.comprice);
-        params.append("comsperifications",_this.updateform.comsperifications);
-        params.append("complace",_this.updateform.complace);
-        params.append("comnum",_this.updateform.comnum);
+        let  formData = new FormData();
+        // formData.append("img",this.addform.img);
+        //将需要提交的表单数据 快速组装为H5定义的类型FormData
+        Object.keys(_this.updateform).forEach((key) => {
+          formData.append(key, _this.updateform[key]);
+        });
 
-        this.$axios.post("updateCommodity.action",params).then(function (result) {  //成功  执行then里面的方法
+        this.$axios({
+          method: 'post',
+          url: 'updateCommodity.action',
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(function (result) {  //成功  执行then里面的方法
 
             _this.$message({
               message: result.data,
@@ -432,6 +445,16 @@
             console.log(error)
           });
       },
+      getCategory(){
+
+        var _this=this;
+        this.$axios.post("queryAllCategoryCom.action").then(function (result) {
+
+          _this.category=result.data;
+        }).catch(function (error) {
+          console.log(error)
+        })
+      },
       //查询市
       getcity:function(){
         var _this = this;
@@ -488,11 +511,19 @@
       },
       handleAvatarSuccess(res, file) {
         this.addform.comimg = URL.createObjectURL(file.raw);
-      }
+      },
+      getFile: function (file,fileList) {  //文件每次选中，触发此方法  将选中的文件内容填充到addform中的img  后台通过img获取文件内容
+
+        this.addform.fileImg = fileList[0].raw;
+        this.updateform.fileImg = fileList[0].raw;
+        console.log(this.addform.fileImg);
+      },
     },
+
     created:function(){
       this.getData();
       this.getprovince();
+      this.getCategory();
     }
     }
 
