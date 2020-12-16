@@ -10,7 +10,7 @@
         @close="handleClose">
 
 
-          <el-submenu :index="menu.id+''"  v-for="menu in menusData">
+          <el-submenu v-if="menu.childMenu.length>0" :index="menu.id+''"  v-for="menu in menusData">
                 <template  slot="title">
                   <i :class="menu.iconUrl"></i>
                   <span>{{menu.name}}</span>
@@ -37,7 +37,8 @@
       name: "left",
       data() {
         return {
-          menusData: []
+          menusData: [],
+          staffid:sessionStorage.getItem("staffid")
         }
       },
       methods: {
@@ -54,9 +55,11 @@
         getmenudata() {  //获取数据
           var _this = this;
 
-          this.$axios.post("queryAllLeftMenu.action").then(function (result) {  //成功  执行then里面的方法
+          var params = new URLSearchParams();
+          params.append("sid",_this.staffid);
+
+          this.$axios.post("queryAllLeftMenu.action",params).then(function (result) {  //成功  执行then里面的方法
             _this.menusData = result.data;
-            console.log("23::"+result.data)
 
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)

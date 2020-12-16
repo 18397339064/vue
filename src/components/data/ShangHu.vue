@@ -1,13 +1,16 @@
 <template>
   <div id="app" style="margin-top: -10px">
     <el-row>
-      <el-button type="success" round @click="addwarehousedialog = true">添加</el-button>
+      <el-button type="success" round @click="addshanghudialog = true">添加</el-button>
 
       <!--添加对话框-->
-      <el-dialog title="添加仓库" :visible.sync="addwarehousedialog" width="40%" center>
+      <el-dialog title="添加商户" :visible.sync="addshanghudialog" width="40%" center>
         <el-form :model="addform" label-width="80px" :rules="addforms" ref="addformref">
-          <el-form-item label="仓库名" prop="whname">
-            <el-input v-model="addform.whname"></el-input>
+          <el-form-item label="商户名" prop="shname">
+            <el-input v-model="addform.shname"></el-input>
+          </el-form-item>
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="addform.username" @change="queryusername"></el-input>
           </el-form-item>
           <el-form-item label="省">
             <el-select v-model="pid" @change="getcity">
@@ -27,17 +30,12 @@
               <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="仓库地址" prop="whaddress">
-            <el-input v-model="addform.whaddress"></el-input>
-          </el-form-item>
-          <el-form-item label="商品类型" prop="ctid">
-            <el-select v-model="addform.ctid" placeholder="请选择商品类型">
-              <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
-            </el-select>
+          <el-form-item label="商户地址" prop="shaddress">
+            <el-input v-model="addform.shaddress"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="addwarehousedialog = false">取 消</el-button>
+          <el-button @click="addshanghudialog = false">取 消</el-button>
           <el-button type="primary" @click="add('addformref')">确 定</el-button>
         </div>
       </el-dialog>
@@ -50,47 +48,43 @@
       </el-popconfirm>
     </el-row>
     <br>
-    <el-row>
-      <el-col :span="5">
-        <el-input placeholder="请输入仓库名" clearable style="width: 300px;margin-right: 1100px" v-model="whname" @change="query">
-          <template slot="prepend">仓库名</template>
-        </el-input>
-      </el-col>
-      <el-col :span="8">
-        <div style="margin-left: 100px">
-          <el-select v-model="ctid" placeholder="请选择商品类型"  @change="query">
-            <el-option value="" label="---请选择商品类型---"></el-option>
-            <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
-          </el-select>
-        </div>
-      </el-col>
-    </el-row>
+    <el-input placeholder="请输入商户名" clearable style="width: 300px;margin-right: 1100px" v-model="shname" @change="query">
+      <template slot="prepend">商户名</template>
+    </el-input>
 
     <el-table
-      :data="warehouse"
+      :data="shanghu"
       @selection-change="selectionchange">
       <el-table-column
         type="selection"
         width="55">
       </el-table-column>
       <el-table-column
-        prop="whid"
-        label="仓库id">
+        prop="shid"
+        label="商户id">
       </el-table-column>
       <el-table-column
-        prop="whname"
-        label="仓库名">
+        prop="shname"
+        label="商户名">
       </el-table-column>
       <el-table-column
-        prop="category.ctname"
-        label="商品分类">
+        prop="user.username"
+        label="用户名">
+      </el-table-column>
+      <el-table-column
+        prop="shaddress"
+        label="商户地址">
+      </el-table-column>
+      <el-table-column
+        prop="shstate"
+        label="商户状态">
       </el-table-column>
       <el-table-column
         fixed="right"
         label="操作">
         <template slot-scope="scope">
           <el-button type="primary" round @click="update1(scope.row)">编辑</el-button>
-          <el-popconfirm @confirm="dele(scope.row.whid)"
+          <el-popconfirm @confirm="dele(scope.row.shid)"
                          title="确定删除吗？"
           >
             <el-button type="danger" slot="reference" round >删除</el-button>
@@ -113,11 +107,14 @@
     </el-pagination>
 
     <!--修改对话框-->
-    <el-dialog title="编辑仓库" :visible.sync="updatewarehousedialog" width="40%" center>
+    <el-dialog title="编辑商户" :visible.sync="updateshanghudialog" width="40%" center>
       <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
-        <el-input v-model="updateform.whid" type="hidden"></el-input>
-        <el-form-item label="仓库名" prop="whname">
-          <el-input v-model="updateform.whname"></el-input>
+        <el-input v-model="updateform.shid" type="hidden"></el-input>
+        <el-form-item label="商户名" prop="shname">
+          <el-input v-model="updateform.shname"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名">
+          <el-input v-model="updateform.username" readonly></el-input>
         </el-form-item>
         <el-form-item label="省">
           <el-select v-model="pid" @change="getcity">
@@ -137,17 +134,12 @@
             <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="仓库地址" prop="whaddress">
-          <el-input v-model="updateform.whaddress"></el-input>
-        </el-form-item>
-        <el-form-item label="商品类型" prop="ctid">
-          <el-select v-model="updateform.ctid" placeholder="请选择商品类型">
-            <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
-          </el-select>
+        <el-form-item label="商户地址" prop="shaddress">
+          <el-input v-model="updateform.shaddress"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="updatewarehousedialog = false">取 消</el-button>
+        <el-button @click="updateshanghudialog = false">取 消</el-button>
         <el-button type="primary" @click="update2('updateformref')">确 定</el-button>
       </div>
     </el-dialog>
@@ -159,55 +151,51 @@
     name: "app",
     data () {
       return {
-        warehouse: [],
+        shanghu: [],
         pageindex:1,//当前显示页面
         totalpage:0,//总页面
         total:0,  //总条目数
         size:5,  //每页显示多少条
-        whname:"",
-        ctid:'',
+        shname:"",
         currentpage:1,
-        addwarehousedialog:false,
+        addshanghudialog:false,
         addform: {
-          whname:'',
-          whaddress:'',
-          ctid:''
+          shname:'',
+          userid:0,
+          username:'',
+          shaddress:''
         },
         addforms:{
-          whname: [
-            { required: true, message: "仓库名不能为空", trigger: "blur" },
-            { min: 4, max: 10, message: "长度在 4 到 10 个字符", trigger: "blur" }
+          shname: [
+            { required: true, message: "商户名不能为空", trigger: "blur" },
+            { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
           ],
-          whaddress: [
-            { required: true, message: "仓库地址不能为空", trigger: "blur" },
-            {pattern: /^[\u4E00-\u9FA5]+$/,message: '仓库地址只能为中文' }
+          username: [
+            { required: true, message: "用户名不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '用户名只能为中文' }
           ],
-          ctid:[
-            { required: true, message: '请选择商品类型', trigger: 'change' }
+          shaddress:[
+            { required: true, message: "商户地址不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '商户地址只能为中文' }
           ]
         },
-        updatewarehousedialog:false,
+        updateshanghudialog:false,
         updateform:{
-          whid:0,
-          whname:'',
-          whaddress:'',
-          ctid:''
+          shid:0,
+          shname:'',
+          shaddress:''
         },
         updateforms:{
-          whname: [
-            { required: true, message: "仓库名不能为空", trigger: "blur" },
-            { min: 4, max: 10, message: "长度在 4 到 10 个字符", trigger: "blur" }
+          shname: [
+            { required: true, message: "商户名不能为空", trigger: "blur" },
+            { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
           ],
-          whaddress: [
-            { required: true, message: "仓库地址不能为空", trigger: "blur" },
-            {pattern: /^[\u4E00-\u9FA5]+$/,message: '仓库地址只能为中文' }
-          ],
-          ctid:[
-            { required: true, message: '请选择商品类型', trigger: 'change' }
+          shaddress:[
+            { required: true, message: "商户地址不能为空", trigger: "blur" },
+            {pattern: /^[\u4E00-\u9FA5]+$/,message: '商户地址只能为中文' }
           ]
         },
-        selectid:"" ,//复选框选中的id
-        category:[],
+        selectid:"", //复选框选中的id
         province:[],
         city:[],
         area:[],
@@ -220,13 +208,14 @@
       getData() {  //获取数据
         var _this = this;
         var params = new URLSearchParams();
-        params.append("whname",_this.whname);
-        params.append("category.ctid",_this.ctid);
+        params.append("shname",_this.shname);
+        params.append("shstate","已通过");
         params.append("page",_this.pageindex);
         params.append("rows",_this.size);
 
-        this.$axios.post("selWarehouse.action",params).then(function (result) {  //成功  执行then里面的方法
-          _this.warehouse = result.data.rows;
+        this.$axios.post("selShangHu.action",params).then(function (result) {  //成功  执行then里面的方法
+          _this.shanghu = result.data.rows;
+          console.log(_this.shanghu)
 
           //计算总页数
           _this.total=result.data.total;
@@ -240,19 +229,15 @@
       dele(id){
         var _this = this;
         var params = new URLSearchParams();
-        params.append("whid",id);
+        params.append("shid",id);
 
-        this.$axios.post("delWarehouse.action",params)
+        this.$axios.post("delShangHu.action",params)
           .then(function (result) {  //成功  执行then里面的方法
 
-            if(result.data.code=="1"){
-              _this.$message({
-                message: result.data.msg,
-                type: 'success'
-              });
-            }else if(result.data.code=="0"){
-              _this.$message.error(result.data.msg);
-            }
+            _this.$message({
+              message: result.data,
+              type: 'success'
+            });
 
             _this.getData();  //删除操作做完，刷新数据
 
@@ -291,27 +276,25 @@
           if (valid) {
             var _this = this;
             var params = new URLSearchParams();
-            params.append("whname",_this.addform.whname);
-            params.append("whaddress",_this.addform.whaddress);
-            params.append("category.ctid",_this.addform.ctid);
+            params.append("shname",_this.addform.shname);
+            params.append("user.userid",_this.addform.userid);
+            params.append("shaddress",_this.addform.shaddress);
+            params.append("shstate","已通过");
 
-            this.$axios.post("addWarehouse.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("addShangHu.action",params).then(function (result) {  //成功  执行then里面的方法
 
-              if(result.data.code=="1"){
                 _this.$message({
-                  message: result.data.msg,
+                  message: result.data,
                   type: 'success'
-                });
-              }else if(result.data.code=="0"){
-                _this.$message.error(result.data.msg);
-              }
+                })
+
               _this.getData();
 
 
             }).catch(function (error) { //失败 执行catch方法
               console.log(error)
             });
-            _this.addwarehousedialog=false
+            _this.addshanghudialog=false
           } else {
             console.log("error submit!!");
             return false;
@@ -321,14 +304,14 @@
       //把编辑数据传到对话框
       update1(row){
         this.pid=0
-          this.cid=0
-          this.aid=0
+         this.cid=0
+         this.aid=0
         console.log(row)
-        this.updatewarehousedialog=true;
-        this.updateform.whid=row.whid;
-        this.updateform.whname=row.whname;
-        this.updateform.whaddress=row.whaddress;
-        this.updateform.ctid=row.category.ctid;
+        this.updateshanghudialog=true;
+        this.updateform.shid=row.shid;
+        this.updateform.shname=row.shname;
+        this.updateform.username=row.user.username;
+        this.updateform.shaddress=row.shaddress;
       },
       //编辑角色名
       update2(formName){
@@ -336,21 +319,16 @@
           if (valid) {
             var _this = this;
             var params = new URLSearchParams();
-            params.append("whid",_this.updateform.whid);
-            params.append("whname",_this.updateform.whname);
-            params.append("whaddress",_this.updateform.whaddress);
-            params.append("category.ctid",_this.updateform.ctid);
+            params.append("shid",_this.updateform.shid);
+            params.append("shname",_this.updateform.shname);
+            params.append("shaddress",_this.updateform.shaddress);
 
-            this.$axios.post("updWarehouse.action",params).then(function (result) {  //成功  执行then里面的方法
+            this.$axios.post("updShangHu.action",params).then(function (result) {  //成功  执行then里面的方法
 
-              if(result.data.code=="1"){
-                _this.$message({
-                  message: result.data.msg,
-                  type: 'success'
-                });
-              }else if(result.data.code=="0"){
-                _this.$message.error(result.data.msg);
-              }
+              _this.$message({
+                message: result.data,
+                type: 'success'
+              })
 
               _this.getData();
 
@@ -358,7 +336,7 @@
             }).catch(function (error) { //失败 执行catch方法
               console.log(error)
             });
-            _this.updatewarehousedialog=false
+            _this.updateshanghudialog=false
           } else {
             console.log('error submit!!');
             return false;
@@ -369,7 +347,7 @@
       selectionchange(val){
         this.selectid=""
         for(var i=0;i<val.length;i++){
-          this.selectid+=val[i].whid+",";
+          this.selectid+=val[i].shid+",";
         }
         console.log(this.selectid)
 
@@ -381,7 +359,7 @@
         var params = new URLSearchParams();
         params.append("ids", _this.selectid);
 
-        this.$axios.post("delWarehousePL.action",params)
+        this.$axios.post("delShangHuPL.action",params)
           .then(function (result) {  //成功  执行then里面的方法
 
             if(result.data.code=="1"){
@@ -401,19 +379,6 @@
           console.log(error)
         });
 
-      },
-      getCate() {  //获取数据
-        var _this = this;
-        var params = new URLSearchParams();
-        params.append("page",_this.pageindex);
-        params.append("rows",_this.size);
-
-        this.$axios.post("queryAllCategory.action",params).then(function (result) {  //成功  执行then里面的方法
-          _this.category = result.data.rows;
-
-        }).catch(function (error) { //失败 执行catch方法
-          console.log(error)
-        });
       },
       //查询省
       getprovince:function () {
@@ -438,8 +403,8 @@
             _this.city=result.data;
             _this.province.forEach((item)=>{
               if(item.provinceid==_this.pid){
-                _this.addform.whaddress=item.provincename
-                _this.updateform.whaddress=item.provincename
+                _this.addform.shaddress=item.provincename
+                _this.updateform.shaddress=item.provincename
               }
             })
 
@@ -461,8 +426,8 @@
 
             _this.city.forEach((item) => {
               if (item.cityid == _this.cid) {
-                _this.addform.whaddress = _this.addform.whaddress + item.cityname
-                _this.updateform.whaddress = _this.updateform.whaddress + item.cityname
+                _this.addform.shaddress = _this.addform.shaddress + item.cityname
+                _this.updateform.shaddress = _this.updateform.shaddress + item.cityname
               }
             })
           })
@@ -475,15 +440,46 @@
         var _this=this;
         _this.area.forEach((item) => {
           if (item.areaid == _this.aid) {
-            _this.addform.whaddress = _this.addform.whaddress + item.areaname
-            _this.updateform.whaddress = _this.updateform.whaddress + item.areaname
+            _this.addform.shaddress = _this.addform.shaddress + item.areaname
+            _this.updateform.shaddress = _this.updateform.shaddress + item.areaname
           }
         })
       },
+      queryusername(){
+        var _this = this;
+        var params = new URLSearchParams();
+        params.append("username",_this.addform.username);
+
+        this.$axios.post("queryusername.action",params)
+          .then(function (result) {
+            if(result.data.code=="1"){
+              _this.$message({
+                message: result.data.msg,
+                type: 'success'
+              });
+              sessionStorage.setItem("userid", result.data.userid)
+              _this.addform.userid=sessionStorage.getItem("userid")
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+              _this.addform.username='';
+            }else if(result.data.code=="2"){
+              _this.$message.error(result.data.msg);
+              _this.addform.username='';
+            }else if(result.data.code=="3"){
+              _this.$message.error(result.data.msg);
+              _this.addform.username='';
+            }else if(result.data.code=="4"){
+              _this.$message.error(result.data.msg);
+              _this.addform.username='';
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      }
     },
     created:function(){
       this.getData();
-      this.getCate();
       this.getprovince();
     }
   }
