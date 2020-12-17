@@ -25,11 +25,11 @@
   import Staff from "../data/Staff.vue"
   import StaffRole from "../data/StaffRole.vue"
   import WareHouse from "../data/WareHouse.vue"
-  import Supplier from "../data/Supplier";
-  import Commodity from "../data/Commodity";
-  import ShangHu from "../data/ShangHu";
-  import ShangHuShenHe from "../data/ShangHuShenHe";
-  import Stock from "../data/Stock";
+  import Supplier from "../data/Supplier.vue";
+  import Commodity from "../data/Commodity.vue";
+  import ShangHu from "../data/ShangHu.vue";
+  import ShangHuShenHe from "../data/ShangHuShenHe.vue";
+  import Stock from "../data/Stock.vue";
   export default {
     name: "right",
     components:{

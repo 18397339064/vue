@@ -69,9 +69,22 @@
       </el-popconfirm>
     </el-row>
     <br>
-    <el-input placeholder="请输入商品名" clearable style="width: 300px;margin-right: 1100px" v-model="comname" @change="query">
-      <template slot="prepend">商品名</template>
-    </el-input>
+    <el-row>
+      <el-col :span="5">
+        <el-input placeholder="请输入商品名" clearable style="width: 300px;margin-right: 1100px" v-model="comname" @change="query">
+          <template slot="prepend">商品名</template>
+        </el-input>
+      </el-col>
+      <el-col :span="8">
+        <div style="margin-left: 100px">
+          <el-select v-model="ctid" placeholder="请选择商品类型"  @change="query">
+            <el-option value="" label="---请选择商品类型---"></el-option>
+            <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
+          </el-select>
+        </div>
+      </el-col>
+    </el-row>
+
     <el-table
       :data="commodity"
       @selection-change="selectionchange">
@@ -217,6 +230,7 @@
         total:0,  //总条目数
         size:5,  //每页显示多少条
         comname:"",
+        ctid:'',
         currentpage:1,
         addcommoditydialog:false,
         addform: {
@@ -293,6 +307,7 @@
         var _this = this;
         var params = new URLSearchParams();
         params.append("comname",_this.comname);
+        params.append("category.ctid",_this.ctid);
         params.append("page",_this.pageindex);
         params.append("rows",_this.size);
 
@@ -568,6 +583,19 @@
         this.updateform.fileImg = fileList[0].raw;
         console.log(this.addform.fileImg);
       },
+      getCate() {  //获取数据
+        var _this = this;
+        var params = new URLSearchParams();
+        params.append("page",_this.pageindex);
+        params.append("rows",_this.size);
+
+        this.$axios.post("queryAllCategory.action",params).then(function (result) {  //成功  执行then里面的方法
+          _this.category = result.data.rows;
+
+        }).catch(function (error) { //失败 执行catch方法
+          console.log(error)
+        });
+      }
     },
 
     created:function(){
