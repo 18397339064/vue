@@ -28,7 +28,7 @@
         fixed="right"
         label="操作">
         <template slot-scope="scope">
-          <el-popconfirm @confirm="shanghuyes(scope.row.shid)"
+          <el-popconfirm @confirm="shanghuyes(scope.row)"
                          title="确定通过吗？"
           >
             <el-button type="primary" slot="reference" round >通过</el-button>
@@ -110,10 +110,12 @@
         this.size=val
         this.getData()
       },
-      shanghuyes(id){
+      shanghuyes(row){
+        console.log(row)
         var _this = this;
         var params = new URLSearchParams();
-        params.append("shid",id);
+        params.append("shid",row.shid);
+        params.append("userid",row.user.userid);
 
         this.$axios.post("updShangHuYes.action",params).then(function (result) {  //成功  执行then里面的方法
 
