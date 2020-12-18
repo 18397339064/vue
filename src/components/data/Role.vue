@@ -156,6 +156,8 @@ export default {
             });
           }else if(result.data.code=="0"){
             _this.$message.error(result.data.msg);
+          }else if(result.data.code=="2"){
+            _this.$message.error(result.data.msg);
           }
 
           _this.getrole();  //删除操作做完，刷新数据
@@ -285,6 +287,8 @@ export default {
               type: 'success'
             });
           }else if(result.data.code=="0"){
+            _this.$message.error(result.data.msg);
+          }else if(result.data.code=="2"){
             _this.$message.error(result.data.msg);
           }
 
