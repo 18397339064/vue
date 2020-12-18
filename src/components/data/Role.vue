@@ -7,7 +7,7 @@
       <el-dialog title="添加角色" :visible.sync="addroledialog" width="40%" center>
         <el-form :model="addform" label-width="80px" ref="addformref" :rules="addforms">
           <el-form-item label="角色名" prop="addrolename">
-            <el-input v-model="addform.addrolename"></el-input>
+            <el-input v-model="addform.addrolename" @change="addqueryrolename"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -74,7 +74,7 @@
       <el-form :model="updateform" label-width="80px" ref="updateformref" :rules="updateforms">
         <el-input v-model="updateform.updateroleid" type="hidden"></el-input>
         <el-form-item label="角色名" prop="updaterolename">
-          <el-input v-model="updateform.updaterolename"></el-input>
+          <el-input v-model="updateform.updaterolename" @change="upqueryrolename" ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -155,6 +155,8 @@ export default {
               type: 'success'
             });
           }else if(result.data.code=="0"){
+            _this.$message.error(result.data.msg);
+          }else if(result.data.code=="2"){
             _this.$message.error(result.data.msg);
           }
 
@@ -286,6 +288,8 @@ export default {
             });
           }else if(result.data.code=="0"){
             _this.$message.error(result.data.msg);
+          }else if(result.data.code=="2"){
+            _this.$message.error(result.data.msg);
           }
 
           _this.getrole();  //删除操作做完，刷新数据
@@ -295,6 +299,50 @@ export default {
         console.log(error)
       });
 
+    },
+    addqueryrolename(){
+      var _this = this;
+      var params = new URLSearchParams();
+      params.append("rolename",_this.addform.addrolename);
+
+      this.$axios.post("queryrolename.action",params)
+        .then(function (result) {
+          if(result.data.code=="1"){
+            _this.$message({
+              message: result.data.msg,
+              type: 'success'
+            });
+          }else if(result.data.code=="0"){
+            _this.$message.error(result.data.msg);
+            _this.addform.addrolename='';
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+    },
+    upqueryrolename(){
+      var _this = this;
+      var params = new URLSearchParams();
+      params.append("rolename",_this.updateform.updaterolename);
+
+      if(_this.updateform.updaterolename!=""){
+        this.$axios.post("queryrolename.action",params)
+          .then(function (result) {
+            if(result.data.code=="1"){
+              _this.$message({
+                message: result.data.msg,
+                type: 'success'
+              });
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+              _this.updateform.updaterolename="";
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+      }
     }
   },
   created:function(){

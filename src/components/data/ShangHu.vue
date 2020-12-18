@@ -270,7 +270,7 @@
       query(){
         this.getData()
       },
-      //添加角色
+      //添加商户
       add(formName){
         this.$refs[formName].validate(valid => {
           if (valid) {

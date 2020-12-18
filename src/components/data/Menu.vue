@@ -292,6 +292,8 @@
               });
             }else if(result.data.code=="0"){
               _this.$message.error(result.data.msg);
+            }else if(result.data.code=="2"){
+              _this.$message.error(result.data.msg);
             }
 
             _this.getmenu();  //删除操作做完，刷新数据
@@ -442,6 +444,8 @@
                 type: 'success'
               });
             }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+            }else if(result.data.code=="2"){
               _this.$message.error(result.data.msg);
             }
 
