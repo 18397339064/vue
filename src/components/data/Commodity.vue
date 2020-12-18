@@ -331,10 +331,16 @@
         this.$axios.post("deleteCommodity.action",params)
           .then(function (result) {  //成功  执行then里面的方法
 
+            if(result.data.code=="1"){
               _this.$message({
-                message: result.data,
+                message: result.data.msg,
                 type: 'success'
               });
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+            }else if(result.data.code=="2"){
+              _this.$message.error(result.data.msg);
+            }
 
             _this.getData();  //删除操作做完，刷新数据
 
@@ -482,10 +488,16 @@
         this.$axios.post("deleteCommodity.action",params)
           .then(function (result) {  //成功  执行then里面的方法
 
+            if(result.data.code=="1"){
               _this.$message({
-                message: result.data,
+                message: result.data.msg,
                 type: 'success'
               });
+            }else if(result.data.code=="0"){
+              _this.$message.error(result.data.msg);
+            }else if(result.data.code=="2"){
+              _this.$message.error(result.data.msg);
+            }
 
             _this.getData();  //删除操作做完，刷新数据
 
