@@ -101,7 +101,8 @@
               {id:4,comimg:"../img/4.png",comname:"网红烘焙蛋糕 好吃的蛋糕",comprice:"18",count:1}*/
             ],
             selectcount:0,
-            zongprice:0
+            zongprice:0,
+            userid: sessionStorage.getItem("userid")
           }
       },
       methods:{
@@ -134,7 +135,7 @@
         getCate() {  //获取数据
           var _this = this;
           var params = new URLSearchParams();
-          params.append("userid",1);
+          params.append("userid",_this.userid);
           this.$axios.post("selShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
             _this.shop = result.data;
 
