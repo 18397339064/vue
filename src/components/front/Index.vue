@@ -16,7 +16,7 @@
         </el-carousel-item>
       </el-carousel>
 
-      <div  v-for="cate in category">
+      <div v-for="cate in fenleiimgs">
         <div class="am-container ">
           <div class="shopTitle ">
             <h3>{{cate.ctname}}</h3>
@@ -24,9 +24,11 @@
         </div>
         <el-row>
           <hr>
-            <div  v-for="fl in fenleiimgs">
-              <h4>{{fl.spname}}</h4>
-              <el-col :span="4"><div class="grid-content bg-purple"><img :src="fl.name"  class="img1"></div></el-col>
+            <div  v-for="sp in cate.commodity">
+              <el-col :span="4">
+                <div class="grid-content bg-purple"><img :src="sp.comimg"  class="img1" height="200px" width="200px"></div>
+                <h4>{{sp.comname}}</h4>
+              </el-col>
             </div>
         </el-row>
       </div>
@@ -50,30 +52,32 @@
               {name:"../img/3.png"}
             ],
             fenleiimgs:[
-              {name:"../img/网红烘焙蛋糕 好吃的蛋糕.png",spname:"网红烘焙蛋糕 好吃的蛋糕"},
-              {name:"../img/进口美食凤梨酥.png",spname:"进口美食凤梨酥"},
-              {name:"../img/美味沙琪玛 超棒下午茶.png",spname:"美味沙琪玛 超棒下午茶"},
-              {name:"../img/真香预警 超级好吃 手撕面包 儿童早餐早饭.png",spname:"真香预警 超级好吃 手撕面包 儿童早餐早饭"},
-              {name:"../img/机器猫最爱 铜锣烧 最美下午茶.png",spname:"机器猫最爱 铜锣烧 最美下午茶"},
-              {name:"../img/超好吃华夫饼 美食诱惑 下午茶.png",spname:"超好吃华夫饼 美食诱惑 下午茶"}
+/*              {name:"../img/4.png",spname:"网红烘焙蛋糕 好吃的蛋糕"},
+              {name:"../img/5.png",spname:"进口美食凤梨酥"},
+              {name:"../img/6.png",spname:"美味沙琪玛 超棒下午茶"},
+              {name:"../img/7.png",spname:"真香预警 超级好吃 手撕面包 儿童早餐早饭"},
+              {name:"../img/8.png",spname:"机器猫最爱 铜锣烧 最美下午茶"},
+              {name:"../img/9.png",spname:"超好吃华夫饼 美食诱惑 下午茶"}*/
             ],
             category:[]
           }
         },
       methods:{
-        getCate() {  //获取数据
+        getFenl(){
           var _this = this;
-
-          this.$axios.post("queryAllCategory.action").then(function (result) {  //成功  执行then里面的方法
-            _this.category = result.data.rows;
-
+          var params = new URLSearchParams();
+          params.append("id",1);
+          this.$axios.post("queryAll2.action").then(function (result) {  //成功  执行then里面的方法
+            _this.fenleiimgs = result.data;
+            console.log("aaaaaaaa")
+            console.log( _this.fenleiimgs)
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
         }
       },
       created() {
-          this.getCate();
+          this.getFenl();
       }
     }
 </script>

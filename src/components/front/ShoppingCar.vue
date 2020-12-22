@@ -178,6 +178,7 @@
           var _this = this;
           var params = new URLSearchParams();
           params.append("id",row);
+
           this.$axios.post("delShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
             _this.$message({
               showClose: true,
