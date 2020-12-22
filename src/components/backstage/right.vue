@@ -30,7 +30,6 @@
   import ShangHu from "../data/ShangHu.vue";
   import ShangHuShenHe from "../data/ShangHuShenHe.vue";
   import Stock from "../data/Stock.vue";
-  import Order from "../data/Order";
   import Purchase from "../data/Purchase";
   import Order from "../data/Order.vue";
   import ChuKuCom from "../data/ChuKuCom.vue";
@@ -51,7 +50,8 @@
       shanghu:ShangHu,
       shanghushenhe:ShangHuShenHe,
       stock:Stock,
-      order:Order
+      order:Order,
+      purchase:Purchase
     },
     data() {
       return {
