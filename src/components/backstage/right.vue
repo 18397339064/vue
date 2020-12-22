@@ -51,7 +51,9 @@
       shanghushenhe:ShangHuShenHe,
       stock:Stock,
       order:Order,
-      purchase:Purchase
+      purchase:Purchase,
+      chukucom:ChuKuCom,
+      comincome:ComIncome
     },
     data() {
       return {
