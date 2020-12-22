@@ -31,6 +31,7 @@
   import ShangHuShenHe from "../data/ShangHuShenHe.vue";
   import Stock from "../data/Stock.vue";
   import Order from "../data/Order";
+  import Purchase from "../data/Purchase";
   export default {
     name: "right",
     components:{
@@ -47,7 +48,8 @@
       shanghu:ShangHu,
       shanghushenhe:ShangHuShenHe,
       stock:Stock,
-      order:Order
+      order:Order,
+      purchase:Purchase
     },
     data() {
       return {

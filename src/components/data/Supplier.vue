@@ -440,7 +440,6 @@
         //当前第一页
         currentchange(val){
 
-          alert("a");
           this.pageindex=val;
           this.getData();
         },
