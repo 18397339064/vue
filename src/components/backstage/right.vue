@@ -32,6 +32,9 @@
   import Stock from "../data/Stock.vue";
   import Order from "../data/Order";
   import Purchase from "../data/Purchase";
+  import Order from "../data/Order.vue";
+  import ChuKuCom from "../data/ChuKuCom.vue";
+  import ComIncome from "../data/ComIncome.vue";
   export default {
     name: "right",
     components:{
@@ -48,8 +51,7 @@
       shanghu:ShangHu,
       shanghushenhe:ShangHuShenHe,
       stock:Stock,
-      order:Order,
-      purchase:Purchase
+      order:Order
     },
     data() {
       return {

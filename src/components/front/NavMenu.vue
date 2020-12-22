@@ -9,8 +9,8 @@
         <el-menu-item index="1" style="padding-left: 50px"><a @click="comname='index'">首页</a></el-menu-item>
         <el-submenu index="2">
           <template slot="title">分类</template>
-          <el-submenu index="2-1"  v-for="cate in category">
-            <template slot="title"><i :class="cate.ctimg" style="color: white"></i>{{cate.ctname}}</template>
+          <el-submenu index="2-1">
+            <template slot="title"  v-for="cate in category"><i :class="cate.ctimg" style="color: white"></i>{{cate.ctname}}</template>
             <el-menu-item index="2-1-1">网红烘焙蛋糕 好吃的蛋糕</el-menu-item>
             <el-menu-item index="2-1-2">进口美食凤梨酥</el-menu-item>
             <el-menu-item index="2-1-3">美味沙琪玛 超棒下午茶</el-menu-item>
