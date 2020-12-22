@@ -4,7 +4,7 @@
       <el-option v-for="m in months" :label="m.name" :value="m.id"></el-option>
     </el-select>
     <div style="height: 20px"></div>
-    <div id="myChart" :style="{width: '500px', height: '400px'}"></div>
+    <div id="myChart1" :style="{width: '500px', height: '400px'}"></div>
   </div>
 </template>
 
@@ -65,7 +65,7 @@
     methods: {
       drawLine() {
         // 1、基于准备好的dom，初始化echarts实例
-        let myChart = this.$echarts.init(document.getElementById("myChart"));
+        let myChart = this.$echarts.init(document.getElementById("myChart1"));
         //2、构造图表数据
         let options = {
           title: {

@@ -9,11 +9,9 @@
         <el-menu-item index="1" style="padding-left: 50px"><a @click="comname='index'">首页</a></el-menu-item>
         <el-submenu index="2">
           <template slot="title">分类</template>
-          <el-submenu index="2-1">
-            <template slot="title"  v-for="cate in category"><i :class="cate.ctimg" style="color: white"></i>{{cate.ctname}}</template>
-            <el-menu-item index="2-1-1">网红烘焙蛋糕 好吃的蛋糕</el-menu-item>
-            <el-menu-item index="2-1-2">进口美食凤梨酥</el-menu-item>
-            <el-menu-item index="2-1-3">美味沙琪玛 超棒下午茶</el-menu-item>
+          <el-submenu :index="'2-'+cate.ctid"  v-for="cate in category">
+            <template slot="title"><i :class="cate.ctimg" style="color: white"></i>{{cate.ctname}}</template>
+            <el-menu-item :index="'2-'+cate.ctid+'-'+c.comid" v-for="c in cate.commodity">{{c.comname}}</el-menu-item>
           </el-submenu>
 
         </el-submenu>
@@ -50,14 +48,13 @@
       methods:{
         getCate() {  //获取数据
           var _this = this;
+          this.$axios.post("queryAll2.action").then(function (result) {  //成功  执行then里面的方法
 
-          this.$axios.post("queryAllCategory.action").then(function (result) {  //成功  执行then里面的方法
-            _this.category = result.data.rows;
-
+            _this.category = result.data;
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
-        }
+        },
       },
       created() {
           this.getCate();
