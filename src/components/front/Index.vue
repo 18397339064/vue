@@ -50,12 +50,12 @@
               {name:"../img/3.png"}
             ],
             fenleiimgs:[
-              {name:"../img/4.png",spname:"网红烘焙蛋糕 好吃的蛋糕"},
-              {name:"../img/5.png",spname:"进口美食凤梨酥"},
-              {name:"../img/6.png",spname:"美味沙琪玛 超棒下午茶"},
-              {name:"../img/7.png",spname:"真香预警 超级好吃 手撕面包 儿童早餐早饭"},
-              {name:"../img/8.png",spname:"机器猫最爱 铜锣烧 最美下午茶"},
-              {name:"../img/9.png",spname:"超好吃华夫饼 美食诱惑 下午茶"}
+              {name:"../img/网红烘焙蛋糕 好吃的蛋糕.png",spname:"网红烘焙蛋糕 好吃的蛋糕"},
+              {name:"../img/进口美食凤梨酥.png",spname:"进口美食凤梨酥"},
+              {name:"../img/美味沙琪玛 超棒下午茶.png",spname:"美味沙琪玛 超棒下午茶"},
+              {name:"../img/真香预警 超级好吃 手撕面包 儿童早餐早饭.png",spname:"真香预警 超级好吃 手撕面包 儿童早餐早饭"},
+              {name:"../img/机器猫最爱 铜锣烧 最美下午茶.png",spname:"机器猫最爱 铜锣烧 最美下午茶"},
+              {name:"../img/超好吃华夫饼 美食诱惑 下午茶.png",spname:"超好吃华夫饼 美食诱惑 下午茶"}
             ],
             category:[]
           }

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import NavMenu from "./components/front/NavMenu";
+
 import Router from './router/routerconfig.js'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -13,9 +14,12 @@ Axios.defaults.baseURL = "http://localhost:8080/ssm_web"
 // 将baseURL绑定到全局
 Vue.prototype.$axios = Axios
 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
 import app from "./app.vue";
 new Vue({
   el: '#app',
-  render: h => h(app),
+  render: h => h(NavMenu),
   router:Router
 })

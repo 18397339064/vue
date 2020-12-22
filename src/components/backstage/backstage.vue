@@ -24,7 +24,7 @@
 
         </el-main>
       </el-container>
-      <el-footer class="el-footer">：底栏容器。</el-footer>
+      <el-footer class="el-footer" style="margin-left: 1100px"> {{date}}</el-footer>
     </el-container>
   </div>
 </template>
@@ -43,8 +43,8 @@
     },
     data() {
       return {
-        isCollapse: true
-
+        isCollapse: true,
+        date:new Date()
       };
     },
     methods: {
@@ -64,7 +64,19 @@
       if (staffname == undefined || staffname == null || staffname == '') {
         this.$router.push("/stafflogin");
       }
-
+    },
+    mounted () {
+      var _this = this; //声明一个变量指向vue实例this,保证作用域一致
+      this.timer = setInterval(function() {
+        var t = new Date();//修改数据date
+        _this.date=t.getFullYear()+"-"+(t.getMonth()+1)+"-"+t.getDate()+" "
+          +t.getHours()+":"+t.getMinutes()+":"+t.getSeconds();
+      }, 1000);
+    },
+    beforeDestroy () {
+      if(this.timer) {
+        clearInterval(this.timer);//在vue实例销毁钱，清除我们的定时器
+      }
     }
   }
 </script>
