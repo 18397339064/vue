@@ -162,7 +162,42 @@
             <el-tabs type="border-card" style="margin: 20px;">
               <el-tab-pane>
                 <span slot="label"><i class="el-icon-user-solid"></i> 商户信息</span>
-                商户信息
+                <h2 style="text-align: center;margin-top: -5px">商户信息</h2>
+                <div style="margin-left: 300px">
+                  <el-form :model="updateformsh" label-width="80px" ref="updateformshref" :rules="updateformshs">
+                    <el-input v-model="updateformsh.shid" type="hidden"></el-input>
+                    <el-form-item label="商户名" prop="shname">
+                      <el-input v-model="updateformsh.shname" style="width: 350px"></el-input>
+                    </el-form-item>
+                    <el-form-item label="用户名">
+                      <el-input v-model="updateformsh.username" readonly style="width: 350px"></el-input>
+                    </el-form-item>
+                    <el-form-item label="省">
+                      <el-select v-model="pid" @change="getcity">
+                        <el-option :value="0" label="---请选择省---"></el-option>
+                        <el-option v-for="p in province" :value="p.provinceid" :label="p.provincename"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="市">
+                      <el-select v-model="cid" @change="getarea">
+                        <el-option :value="0" label="---请选择市---"></el-option>
+                        <el-option v-for="c in city" :value="c.cityid" :label="c.cityname"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="区">
+                      <el-select v-model="aid" @change="getareaname">
+                        <el-option :value="0" label="---请选择区---"></el-option>
+                        <el-option v-for="a in area" :value="a.areaid" :label="a.areaname"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="商户地址" prop="shaddress" >
+                      <el-input v-model="updateformsh.shaddress" style="width: 350px"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" style="margin-left: 330px" @click="updatesh('updateformshref')">确定修改</el-button>
+                  </div>
+                </div>
               </el-tab-pane>
               <el-tab-pane>
                 <span slot="label"><i class="el-icon-s-promotion"></i> 商户订单</span>
@@ -236,6 +271,23 @@
               shaddress:''
             },
             addforms:{
+              shname: [
+                { required: true, message: "商户名不能为空", trigger: "blur" },
+                { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+              ],
+              shaddress:[
+                { required: true, message: "商户地址不能为空", trigger: "blur" },
+                {pattern: /^[\u4E00-\u9FA5]+$/,message: '商户地址只能为中文' }
+              ]
+            },
+            updateformsh:{
+              shid:sessionStorage.getItem("shid"),
+              shname:sessionStorage.getItem("shname"),
+              userid:sessionStorage.getItem("userid"),
+              username:sessionStorage.getItem("username"),
+              shaddress:sessionStorage.getItem("shaddress")
+            },
+            updateformshs:{
               shname: [
                 { required: true, message: "商户名不能为空", trigger: "blur" },
                 { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
@@ -349,6 +401,7 @@
               _this.province.forEach((item)=>{
                 if(item.provinceid==_this.pid){
                   _this.addform.shaddress=item.provincename
+                  _this.updateformsh.shaddress=item.provincename
                 }
               })
 
@@ -371,6 +424,7 @@
               _this.city.forEach((item) => {
                 if (item.cityid == _this.cid) {
                   _this.addform.shaddress = _this.addform.shaddress + item.cityname
+                  _this.updateformsh.shaddress=_this.updateformsh.shaddress+item.cityname
                 }
               })
             })
@@ -384,6 +438,7 @@
           _this.area.forEach((item) => {
             if (item.areaid == _this.aid) {
               _this.addform.shaddress = _this.addform.shaddress + item.areaname
+              _this.updateformsh.shaddress=_this.updateformsh.shaddress+item.areaname
             }
           })
         },
@@ -409,6 +464,31 @@
               });
             } else {
               console.log("error submit!!");
+              return false;
+            }
+          });
+        },
+        updatesh(formName){
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              var _this = this;
+              var params = new URLSearchParams();
+              params.append("shid",_this.updateformsh.shid);
+              params.append("shname",_this.updateformsh.shname);
+              params.append("shaddress",_this.updateformsh.shaddress);
+
+              this.$axios.post("updShangHu.action",params).then(function (result) {  //成功  执行then里面的方法
+
+                _this.$message({
+                  message: result.data,
+                  type: 'success'
+                })
+
+              }).catch(function (error) { //失败 执行catch方法
+                console.log(error)
+              });
+            } else {
+              console.log('error submit!!');
               return false;
             }
           });

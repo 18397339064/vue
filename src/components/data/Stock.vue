@@ -30,9 +30,9 @@
         </el-pagination>
       </el-col>
       <el-col :span="12" style="margin-left: 80px">
-        <el-button type="success" round @click="adddialog">添加</el-button>
+        <!--<el-button type="success" round @click="adddialog">添加</el-button>
 
-        <!--添加对话框-->
+        &lt;!&ndash;添加对话框&ndash;&gt;
         <el-dialog title="添加商品" :visible.sync="addstockdialog" width="72%" center>
           <el-form :inline="true" :model="addform" class="demo-form-inline">
             <el-form-item label="仓库名">
@@ -95,18 +95,17 @@
         </el-dialog>
 
 
-        <el-popconfirm @confirm="deletepl"
+       <el-popconfirm @confirm="deletepl"
                        title="确定删除吗？"
         >
           <el-button type="danger" slot="reference" round >批量删除</el-button>
-        </el-popconfirm>
+        </el-popconfirm>-->
         <el-table
-          :data="stock"
-          @selection-change="selectionchange">
-          <el-table-column
+          :data="stock">
+          <!--<el-table-column
             type="selection"
             width="55">
-          </el-table-column>
+          </el-table-column>-->
           <el-table-column
             prop="commodity.comimg"
             label="商品图片">
@@ -125,7 +124,7 @@
             prop="stockcount"
             label="库存数量">
           </el-table-column>
-          <el-table-column
+          <!--<el-table-column
             fixed="right"
             label="操作">
             <template slot-scope="scope">
@@ -136,10 +135,10 @@
                 <el-button type="danger" slot="reference" round >删除</el-button>
               </el-popconfirm>
             </template>
-          </el-table-column>
+          </el-table-column>-->
         </el-table>
         <br>
-        <!--修改对话框-->
+       <!-- &lt;!&ndash;修改对话框&ndash;&gt;
         <el-dialog title="编辑库存量" :visible.sync="updatestockdialog" width="40%" center>
           <el-form :model="updateform" label-width="80px">
 
@@ -151,7 +150,7 @@
             <el-button @click="updatestockdialog = false">取 消</el-button>
             <el-button type="primary" @click="update2">确 定</el-button>
           </div>
-        </el-dialog>
+        </el-dialog>-->
       </el-col>
     </el-row>
   </div>
@@ -169,7 +168,7 @@
             total:0,  //总条目数
             size:5,  //每页显示多少条
             currentpage:1,
-            addstockdialog:false,
+           /* addstockdialog:false,
             addform:{
               whid:0,
               whname:'',
@@ -184,8 +183,8 @@
             },
             commodity:[],
             ctid:0,
-            whid:0,
-            selectid:''
+            selectid:''*/
+            whid:0
           }
     },
     methods:{
@@ -228,9 +227,9 @@
       },
       handleCurrentChange(val) {
        this.whid=val.whid;
-       this.ctid=val.category.ctid;
+       this.ctid=val.category.ctid;/*
         this.addform.whid=val.whid;
-        this.addform.whname=val.whname;
+        this.addform.whname=val.whname;*/
         this.getcommodity();
       },
       getcommodity(){
@@ -245,7 +244,7 @@
           console.log(error)
         });
       },
-      adddialog(){
+     /* adddialog(){
         var _this = this;
         this.addform.comid=0;
         this.addform.comname='';
@@ -359,7 +358,7 @@
           console.log(error)
         });
         _this.updatestockdialog=false
-      }
+      }*/
     },
     created:function(){
       this.getData();
