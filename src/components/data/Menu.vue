@@ -81,6 +81,11 @@
       <el-table-column
         prop="nodeType"
         label="节点类型">
+        <template slot-scope="scope">
+            <span v-if="scope.row.nodeType==1">文件夹</span>
+            <span v-else-if="scope.row.nodeType==2">页面</span>
+            <span v-else-if="scope.row.nodeType==3">按钮</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="iconUrl"
@@ -93,6 +98,11 @@
       <el-table-column
         prop="level"
         label="层次">
+        <template slot-scope="scope">
+          <span v-if="scope.row.level==1">文件夹</span>
+          <span v-else-if="scope.row.level==2">页面</span>
+          <span v-else-if="scope.row.level==3">按钮</span>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"

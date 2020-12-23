@@ -20,6 +20,6 @@ Vue.prototype.$echarts = echarts
 import app from "./app.vue";
 new Vue({
   el: '#app',
-  render: h => h(NavMenu),
+  render: h => h(app),
   router:Router
 })
