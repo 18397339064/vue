@@ -26,7 +26,7 @@
           <hr>
             <div  v-for="sp in cate.commodity">
               <el-col :span="4">
-                <div class="grid-content bg-purple"><img :src="sp.comimg"  class="img1" height="200px" width="200px"></div>
+                <div class="grid-content bg-purple"><img :src="sp.comimg"  class="img1" height="200px" width="200px" @click="ShoppingXQ(sp.comid)"></div>
                 <h4>{{sp.comname}}</h4>
               </el-col>
             </div>
@@ -65,15 +65,20 @@
       methods:{
         getFenl(){
           var _this = this;
-          var params = new URLSearchParams();
-          params.append("id",1);
           this.$axios.post("queryAll2.action").then(function (result) {  //成功  执行then里面的方法
             _this.fenleiimgs = result.data;
-            console.log("aaaaaaaa")
-            console.log( _this.fenleiimgs)
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
+        },
+        ShoppingXQ(comid){
+          alert(comid)
+           this.$router.push({
+              name:"Commodity",
+              params:{
+                id:comid
+              }
+            })
         }
       },
       created() {

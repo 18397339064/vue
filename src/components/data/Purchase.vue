@@ -171,6 +171,7 @@
             total:0,  //总条目数
             size:5,  //每页显示多少条
             addcommoditydialog:false,
+            currentpage:1
 
           }
       },
@@ -308,7 +309,7 @@
           this.$axios({
             method: 'post',
             url: 'addPurchase.action',
-            data:JSON.stringify(this.tabData),
+            data:JSON.stringify(_this.tabData),
             headers: {
               'Content-Type':'application/json;charset=utf-8'
             }
@@ -323,96 +324,7 @@
           })
 
           _this.tabData.splice(0);
-         /* this.$axios.post("addPurchase.action",params).then(function (result) {
-
-            alert(result.data);
-          }).catch(function (e) {
-
-          })*/
-
-        },
-        updatesupcom1(row){
-          this.updatesupcomdialog=true;
-          this.updateformcom.supcomid=row.supcomid;
-          this.updateformcom.jinprice=row.jinprice
-        },
-        updatesupcom2(formName){
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              var _this = this;
-              var params = new URLSearchParams();
-              params.append("supcomid",_this.updateformcom.supcomid);
-              params.append("jinprice",_this.updateformcom.jinprice);
-              this.$axios.post("updsupcom.action",params).then(function (result) {  //成功  执行then里面的方法
-                if(result.data.code=="1"){
-                  _this.$message({
-                    message: result.data.msg,
-                    type: 'success'
-                  });
-                  _this.getSupCom();
-                }else if(result.data.code=="0") {
-                  _this.$message.error(result.data.msg);
-                }
-              }).catch(function (error) { //失败 执行catch方法
-                console.log(error)
-              });
-              _this.updatesupcomdialog=false
-            } else {
-              console.log('error submit!!');
-              return false;
-            }
-          });
-        },
-
-        //复选框选中
-        selectionchangesupcom(val){
-          this.selectsupcomid=""
-          for(var i=0;i<val.length;i++){
-            this.selectsupcomid+=val[i].supcomid+",";
-          }
-          console.log(this.selectsupcomid)
-        },
-        deletesupcompl(){
-          var _this = this;
-          var params = new URLSearchParams();
-          params.append("ids", _this.selectsupcomid);
-          this.$axios.post("delsupcompl.action",params)
-            .then(function (result) {  //成功  执行then里面的方法
-              if(result.data.code=="1"){
-                _this.$message({
-                  message: result.data.msg,
-                  type: 'success'
-                });
-                _this.getSupCom();
-              }else if(result.data.code=="0") {
-                _this.$message.error(result.data.msg);
-              }
-            }).catch(function (error) { //失败 执行catch方法
-            console.log(error)
-          });
-        },
-        delesupcom(id){
-          var _this = this;
-          var params = new URLSearchParams();
-          params.append("supcomid",id);
-          this.$axios.post("delsupcom.action",params)
-            .then(function (result) {  //成功  执行then里面的方法
-              if(result.data.code=="1"){
-                _this.$message({
-                  message: result.data.msg,
-                  type: 'success'
-                });
-                _this.getSupCom();
-              }else if(result.data.code=="0") {
-                _this.$message.error(result.data.msg);
-              }
-            }).catch(function (error) { //失败 执行catch方法
-            console.log(error)
-          });
-        },
-      },
-      created:function(){
-
+        }
       }
     }
 </script>
