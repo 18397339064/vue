@@ -34,6 +34,7 @@
   import Order from "../data/Order.vue";
   import ChuKuCom from "../data/ChuKuCom.vue";
   import ComIncome from "../data/ComIncome.vue";
+  import OrderShenHe from "../data/OrderShenHe";
   export default {
     name: "right",
     components:{
@@ -53,7 +54,8 @@
       order:Order,
       purchase:Purchase,
       chukucom:ChuKuCom,
-      comincome:ComIncome
+      comincome:ComIncome,
+      ordershenhe:OrderShenHe
     },
     data() {
       return {
