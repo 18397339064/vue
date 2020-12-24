@@ -61,8 +61,8 @@
       </el-col>
       <el-col :span="8">
         <div style="margin-left: 100px">
-          <el-select v-model="ctid" placeholder="请选择商品类型"  @change="query">
-            <el-option value="" label="---请选择商品类型---"></el-option>
+          <el-select v-model="ctid" placeholder="请选择仓库类型"  @change="query">
+            <el-option value="" label="---请选择仓库类型---"></el-option>
             <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
           </el-select>
         </div>
@@ -86,7 +86,7 @@
       </el-table-column>
       <el-table-column
         prop="category.ctname"
-        label="商品分类">
+        label="仓库分类">
       </el-table-column><!--
       <el-table-column
         prop="capacity"
@@ -147,8 +147,8 @@
         <el-form-item label="仓库地址" prop="whaddress">
           <el-input v-model="updateform.whaddress"></el-input>
         </el-form-item>
-        <el-form-item label="商品类型" prop="ctid">
-          <el-select v-model="updateform.ctid" placeholder="请选择商品类型">
+        <el-form-item label="仓库类型" prop="ctid">
+          <el-select v-model="updateform.ctid" placeholder="请选择仓库类型">
             <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
           </el-select>
         </el-form-item><!--
