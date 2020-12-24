@@ -187,7 +187,7 @@
         addforms:{
           whname: [
             { required: true, message: "仓库名不能为空", trigger: "blur" },
-            { min: 4, max: 10, message: "长度在 4 到 10 个字符", trigger: "blur" }
+            { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
           ],
           whaddress: [
             { required: true, message: "仓库地址不能为空", trigger: "blur" },
@@ -212,7 +212,7 @@
         updateforms:{
           whname: [
             { required: true, message: "仓库名不能为空", trigger: "blur" },
-            { min: 4, max: 10, message: "长度在 4 到 10 个字符", trigger: "blur" }
+            { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
           ],
           whaddress: [
             { required: true, message: "仓库地址不能为空", trigger: "blur" },
