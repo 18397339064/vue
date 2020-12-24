@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import NavMenu from "./components/front/NavMenu";
+import NavMenu from "./components/front/NavMenu.vue";
 
 import Router from './router/routerconfig.js'
 import ElementUI from 'element-ui'
