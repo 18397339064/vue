@@ -18,6 +18,7 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
 import app from "./app.vue";
+import JieSuan from "./components/front/JieSuan";
 new Vue({
   el: '#app',
   render: h => h(app),
