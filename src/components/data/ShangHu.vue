@@ -313,7 +313,7 @@
         this.updateform.username=row.user.username;
         this.updateform.shaddress=row.shaddress;
       },
-      //编辑角色名
+      //编辑商户
       update2(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {

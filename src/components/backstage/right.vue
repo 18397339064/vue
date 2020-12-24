@@ -29,7 +29,12 @@
   import Commodity from "../data/Commodity.vue";
   import ShangHu from "../data/ShangHu.vue";
   import ShangHuShenHe from "../data/ShangHuShenHe.vue";
-  import Stock from "../data/Stock.vue";
+  import Stock from "../data/Stock.vue"
+  import Purchase from "../data/Purchase";
+  import Order from "../data/Order.vue";
+  import ChuKuCom from "../data/ChuKuCom.vue";
+  import ComIncome from "../data/ComIncome.vue";
+  import RuKuShenHe from "../data/RuKuShenHe.vue";
   export default {
     name: "right",
     components:{
@@ -45,7 +50,12 @@
       commodity:Commodity,
       shanghu:ShangHu,
       shanghushenhe:ShangHuShenHe,
-      stock:Stock
+      stock:Stock,
+      order:Order,
+      chukucom:ChuKuCom,
+      comincome:ComIncome,
+      purchase:Purchase,
+      rukushenhe:RuKuShenHe
     },
     data() {
       return {

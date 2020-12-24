@@ -64,6 +64,9 @@
               sessionStorage.setItem("usersex",result.data.usersex)
               sessionStorage.setItem("userphone",result.data.userphone)
               sessionStorage.setItem("usersh",result.data.usersh)
+              sessionStorage.setItem("shid",result.data.shid)
+              sessionStorage.setItem("shname",result.data.shname)
+              sessionStorage.setItem("shaddress",result.data.shaddress)
 
             }else if(result.data.code=="0"){
               _this.$message.error(result.data.msg);

@@ -53,7 +53,7 @@
           width="250px"
           align="center">
             <template slot-scope="scope">
-              <el-input-number  :name="scope.$index+''"   v-model="scope.row.shopCount" :min="1" :max="100" @blur="number" @change="number1"></el-input-number>
+              <el-input-number  :name="scope.$index+''"   v-model="scope.row.shopCount" :min="1" :max="100" @blur="number" @change="number1(scope.row)"></el-input-number>
             </template>
           </el-table-column>
           <el-table-column align="center">
@@ -115,9 +115,22 @@
           }
         },
         //通过计数器控制数量改价格
-        number1(){
+        number1(spoce){
           var num = this.$refs.multipleTable.selection;
           this.selectionchange(num);
+          var _this = this;
+          var params = new URLSearchParams();
+          params.append("shopid",spoce.shopid);
+          params.append("shopCount",spoce.shopCount);
+          this.$axios.post("updShoppingCarShu.action",params).then(function (result) {  //成功  执行then里面的方法
+            _this.$message({
+              showClose: true,
+              message:result.data,
+              type: 'success'
+            });
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
         },
         //手动输入数量
         number(event){
@@ -167,17 +180,18 @@
           }
           params.append("num1",num1);
           params.append("num2",num2);
-          this.$axios.post("updShoppingCarShu.action",params).then(function (result) {  //成功  执行then里面的方法
+/*          this.$axios.post("updShoppingCarShu.action",params).then(function (result) {  //成功  执行then里面的方法
 
 
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
-          });
+          });*/
         },
         shanchu(row){
           var _this = this;
           var params = new URLSearchParams();
           params.append("id",row);
+
           this.$axios.post("delShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
             _this.$message({
               showClose: true,
