@@ -308,8 +308,14 @@
           this.addformcom.comname=row.comname;
         },
         addPurchase(){
-
           var _this=this;
+          if(_this.tabData.length==0){
+            _this.$message({
+              message: '请先采购商品',
+              type: 'warning'
+            });
+            return;
+          }
           this.$axios({
             method: 'post',
             url: 'addPurchase.action',

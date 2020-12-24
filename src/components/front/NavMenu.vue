@@ -6,7 +6,7 @@
         background-color="#2c3e50"
         text-color="white"
         active-text-color="#ffd04b">
-        <el-menu-item index="1" style="padding-left: 50px"><a @click="comname='index'">首页</a></el-menu-item>
+        <el-menu-item index="1" style="padding-left: 50px" @click="comname='index'"><a >首页</a></el-menu-item>
         <el-submenu index="2">
           <template slot="title">分类</template>
           <el-submenu :index="'2-'+cate.ctid"  v-for="cate in category">
@@ -15,11 +15,11 @@
           </el-submenu>
 
         </el-submenu>
-        <el-menu-item index="3"><a @click="comname='shoppingcar'">购物车</a></el-menu-item>
-        <el-menu-item index="4"><a @click="comname='preson'">个人中心</a></el-menu-item>
-        <el-menu-item index="5" style="padding-left: 700px"><a @click="comname='userlogin'" v-if="useraccount==null">登录</a></el-menu-item>
-        <el-menu-item index="6" style="padding-top:1px"  v-if="useraccount!=null">已登录</el-menu-item>
-        <el-menu-item index="7" style="padding-left: 50px"><a @click="comname='zhuceuser'">注册</a></el-menu-item>
+        <el-menu-item index="3" @click="a('shoppingcar')"><a >购物车</a></el-menu-item>
+        <el-menu-item index="4" @click="a('preson')"><a >个人中心</a></el-menu-item>
+        <el-menu-item index="5" style="padding-left: 700px" @click="comname='userlogin'"><a  v-if="username==null">登录</a></el-menu-item>
+        <el-menu-item index="6" style="padding-top:1px"  v-if="username!=null">欢迎{{username}}</el-menu-item>
+        <el-menu-item index="7" style="padding-left: 50px" @click="comname='zhuceuser'"><a >注册</a></el-menu-item>
       </el-menu>
       <component :is="comname"></component>
     </div>
@@ -37,7 +37,7 @@
           return {
             comname:"index",
             category:[],
-            useraccount:sessionStorage.getItem("useraccount")
+            username:sessionStorage.getItem("username")
           }
       },
       components: {
@@ -65,6 +65,20 @@
               id:comid
             }
           })
+        },
+        //判断登录 没 跳转登录
+        a(name){
+
+          if(sessionStorage.getItem("userid")==null){
+            this.$message({
+              message: '请先登录',
+              type: 'warning'
+            });
+            this.comname="userlogin";
+            return;
+          }
+
+          this.comname=name;
         }
       },
       created() {

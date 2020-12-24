@@ -21,7 +21,7 @@
         <div slot="footer" class="dialog-footer" style="margin-left: 40px">
           <el-row>
             <el-col :span="12"><el-button type="primary" style="width: 150px;" @click="userlogin">登录</el-button></el-col>
-            <el-col :span="12"><el-button type="primary" style="width: 150px;">注册</el-button></el-col>
+            <el-col :span="12"><el-button type="primary" style="width: 150px;" @click="userRegist">注册</el-button></el-col>
           </el-row>
         </div>
       </div>
@@ -68,7 +68,7 @@
               sessionStorage.setItem("shname",result.data.shname)
               sessionStorage.setItem("shaddress",result.data.shaddress)
 
-              _this.$parent.useraccount=sessionStorage.getItem("useraccount");
+              _this.$parent.username=sessionStorage.getItem("username");
 
               _this.$parent.comname="index";
 
@@ -79,6 +79,10 @@
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
+        },
+        //跳转注册界面
+        userRegist(){
+          this.$parent.comname="zhuceuser";
         }
       }
     }
