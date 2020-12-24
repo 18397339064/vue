@@ -235,7 +235,7 @@
       getcommodity(){
         var _this = this;
         var params = new URLSearchParams();
-        params.append("whid", _this.whid);
+        params.append("warehouse.whid", _this.whid);
         params.append("commodity.category.ctid", _this.ctid);
         this.$axios.post("queryAllStock.action", params).then(function (result) {  //成功  执行then里面的方法
           _this.stock = result.data.rows;
