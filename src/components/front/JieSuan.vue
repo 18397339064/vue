@@ -4,6 +4,7 @@
       <el-page-header content="结算">
       </el-page-header>
       <br>
+      <hr>
       <br>
       <div style="font-size: 20px">
         <i class="el-icon-location-outline" style="font-size: 25px"></i>
