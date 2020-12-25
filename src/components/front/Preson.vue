@@ -516,12 +516,13 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane v-else-if="usersh==1">
+        <el-tab-pane v-else-if="usersh==1" name="guanLi">
           <span slot="label"><i class="el-icon-location"></i> 商户管理</span>
           商户管理
-          <el-tabs type="border-card" style="margin: 20px;">
-            <el-tab-pane>
+          <el-tabs v-model="shangHu" type="border-card" style="margin: 20px;" @tab-click="selectShangHu">
+            <el-tab-pane name="shangHuGuanLi">
               <span slot="label"><i class="el-icon-user-solid"></i> 商户信息</span>
+              <div v-if="isShangHuGuanLi">
               <h2 style="text-align: center;margin-top: -5px">商户信息</h2>
               <div style="margin-left: 300px">
                 <el-form :model="updateformsh" label-width="80px" ref="updateformshref" :rules="updateformshs">
@@ -558,28 +559,421 @@
                   <el-button type="primary" style="margin-left: 330px" @click="updatesh('updateformshref')">确定修改</el-button>
                 </div>
               </div>
+              </div>
             </el-tab-pane>
-            <el-tab-pane>
+            <el-tab-pane name="shangHuDingDan">
               <span slot="label"><i class="el-icon-s-promotion"></i> 商户订单</span>
               商户订单
-              <el-tabs type="border-card" style="margin: 20px;">
-                <el-tab-pane>
+              <div v-if="isShangHuDingDan">
+              <el-tabs v-model="shangDingDan" type="border-card" @tab-click="clickShangHu" style="margin: 20px;">
+                <el-tab-pane  name="shangQuanBu">
                   <span slot="label"><i class="el-icon-date"></i> 全部订单</span>
-                  全部订单
+                  <div v-if="isShangQuanBu">
+                    全部订单
+                    <el-table
+                      :data="shangHuOrders">
+                      <el-table-column
+                        prop="commodity.comname"
+                        label="商品名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="commodity.comimg"
+                        label="商品图"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-popover placement="top-start" trigger="hover">
+                            <img :src="scope.row.commodity.comimg" style="width: 150px;height: 150px">
+                            <img slot="reference" :src="'../'+scope.row.commodity.comimg" style="width: 100px;height: 100px">
+                          </el-popover>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordercount"
+                        label="数量"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="user.username"
+                        label="用户名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="shangHuInfo.shaddress"
+                        label="商户地址"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordertime"
+                        label="订单时间"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="totalmoney"
+                        label="总金额"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        label="订单状态"
+                        align="center">
+                        <template slot-scope="scope">
+                          {{ scope.row.orderstate == 1 ? '待发货' : scope.row.orderstate == 2 ?'待收货': scope.row.orderstate == 3 ?'待提货': scope.row.orderstate == 4 ?'已提货': '' }}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        align="center" width="200">
+                        <template slot-scope="scope">
+                          <el-popconfirm @confirm="shangHuShouHuo(scope.row)"
+                                         title="确定收货吗？"
+                          >
+                            <el-button type="danger" slot="reference" style="width: 110px"  round v-if="scope.row.orderstate==2">确认收货</el-button>
+                          </el-popconfirm>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <br>
+                    <el-pagination
+                      background
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :page-sizes="[5, 10, 15, 20]"
+                      :page-size="sizeShangHu"
+                      :total="totalShangHu"
+                      :current-page="currentpageShangHu"
+                      @prev-click="prvpageShangHu"
+                      @next-click="nextpageShangHu"
+                      @current-change="currentchangeShangHu"
+                      @size-change="sizechangeShangHu">
+                    </el-pagination>
+                  </div>
                 </el-tab-pane>
-                <el-tab-pane>
-                  <span slot="label"><i class="el-icon-s-finance"></i> 待付款</span>
-                  待付款
+                <el-tab-pane name="shangDaiFaHuo">
+                  <span slot="label"><i class="el-icon-s-finance"></i> 待发货</span>
+                  <div v-if="isShangDaiFaHuo">
+                    待发货
+                    <el-table
+                      :data="shangHuOrders">
+                      <el-table-column
+                        prop="commodity.comname"
+                        label="商品名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="commodity.comimg"
+                        label="商品图"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-popover placement="top-start" trigger="hover">
+                            <img :src="scope.row.commodity.comimg" style="width: 150px;height: 150px">
+                            <img slot="reference" :src="'../'+scope.row.commodity.comimg" style="width: 100px;height: 100px">
+                          </el-popover>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordercount"
+                        label="数量"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="user.username"
+                        label="用户名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="shangHuInfo.shaddress"
+                        label="商户地址"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordertime"
+                        label="订单时间"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="totalmoney"
+                        label="总金额"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        label="订单状态"
+                        align="center">
+                        <template slot-scope="scope">
+                          {{ scope.row.orderstate == 1 ? '待发货' : scope.row.orderstate == 2 ?'待收货': scope.row.orderstate == 3 ?'待提货': scope.row.orderstate == 4 ?'已提货': '' }}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        align="center" width="200">
+                        <template slot-scope="scope">
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <br>
+                    <el-pagination
+                      background
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :page-sizes="[5, 10, 15, 20]"
+                      :page-size="sizeShangHu"
+                      :total="totalShangHu"
+                      :current-page="currentpageShangHu"
+                      @prev-click="prvpageShangHu"
+                      @next-click="nextpageShangHu"
+                      @current-change="currentchangeShangHu"
+                      @size-change="sizechangeShangHu">
+                    </el-pagination>
+                  </div>
                 </el-tab-pane>
-                <el-tab-pane>
-                  <span slot="label"><i class="el-icon-truck"></i> 待收货</span>
-                  待收货
+                <el-tab-pane name="shangDaiShouHuo">
+                  <span slot="label"><i class="el-icon-s-finance"></i> 待收货</span>
+                  <div v-if="isShangDaiShouHuo">
+                    待收货
+                    <el-table
+                      :data="shangHuOrders">
+                      <el-table-column
+                        prop="commodity.comname"
+                        label="商品名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="commodity.comimg"
+                        label="商品图"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-popover placement="top-start" trigger="hover">
+                            <img :src="scope.row.commodity.comimg" style="width: 150px;height: 150px">
+                            <img slot="reference" :src="'../'+scope.row.commodity.comimg" style="width: 100px;height: 100px">
+                          </el-popover>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordercount"
+                        label="数量"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="user.username"
+                        label="用户名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="shangHuInfo.shaddress"
+                        label="商户地址"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordertime"
+                        label="订单时间"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="totalmoney"
+                        label="总金额"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        label="订单状态"
+                        align="center">
+                        <template slot-scope="scope">
+                          {{ scope.row.orderstate == 1 ? '待发货' : scope.row.orderstate == 2 ?'待收货': scope.row.orderstate == 3 ?'待提货': scope.row.orderstate == 4 ?'已提货': '' }}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        align="center" width="200">
+                        <template slot-scope="scope">
+                          <el-popconfirm @confirm="shangHuShouHuo(scope.row)"
+                                         title="确定收货吗？"
+                          >
+                            <el-button type="danger" slot="reference" style="width: 110px"  round>确认收货</el-button>
+                          </el-popconfirm>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <br>
+                    <el-pagination
+                      background
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :page-sizes="[5, 10, 15, 20]"
+                      :page-size="sizeShangHu"
+                      :total="totalShangHu"
+                      :current-page="currentpageShangHu"
+                      @prev-click="prvpageShangHu"
+                      @next-click="nextpageShangHu"
+                      @current-change="currentchangeShangHu"
+                      @size-change="sizechangeShangHu">
+                    </el-pagination>
+                  </div>
                 </el-tab-pane>
-                <el-tab-pane>
-                  <span slot="label"><i class="el-icon-finished"></i> 已收货</span>
-                  已收货
+                <el-tab-pane  name="shangDaiTiHuo">
+                  <span slot="label"><i class="el-icon-truck"></i> 待提货</span>
+                  <div v-if="isShangDaiTiHuo">
+                    待提货
+                    <el-table
+                      :data="shangHuOrders">
+                      <el-table-column
+                        prop="commodity.comname"
+                        label="商品名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="commodity.comimg"
+                        label="商品图"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-popover placement="top-start" trigger="hover">
+                            <img :src="scope.row.commodity.comimg" style="width: 150px;height: 150px">
+                            <img slot="reference" :src="'../'+scope.row.commodity.comimg" style="width: 100px;height: 100px">
+                          </el-popover>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordercount"
+                        label="数量"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="user.username"
+                        label="用户名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="shangHuInfo.shaddress"
+                        label="商户地址"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordertime"
+                        label="订单时间"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="totalmoney"
+                        label="总金额"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        label="订单状态"
+                        align="center">
+                        <template slot-scope="scope">
+                          {{ scope.row.orderstate == 1 ? '待发货' : scope.row.orderstate == 2 ?'待收货': scope.row.orderstate == 3 ?'待提货': scope.row.orderstate == 4 ?'已提货': '' }}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        align="center" width="200">
+                        <template slot-scope="scope">
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <br>
+                    <el-pagination
+                      background
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :page-sizes="[5, 10, 15, 20]"
+                      :page-size="sizeShangHu"
+                      :total="totalShangHu"
+                      :current-page="currentpageShangHu"
+                      @prev-click="prvpageShangHu"
+                      @next-click="nextpageShangHu"
+                      @current-change="currentchangeShangHu"
+                      @size-change="sizechangeShangHu">
+                    </el-pagination>
+                  </div>
+                </el-tab-pane>
+                <el-tab-pane name="shangYiTiHuo">
+                  <span slot="label"><i class="el-icon-finished"></i> 已提货</span>
+                  <div v-if="isShangYiTiHuo">
+                    已提货
+                    <el-table
+                      :data="shangHuOrders">
+                      <el-table-column
+                        prop="commodity.comname"
+                        label="商品名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="commodity.comimg"
+                        label="商品图"
+                        align="center">
+                        <template slot-scope="scope">
+                          <el-popover placement="top-start" trigger="hover">
+                            <img :src="scope.row.commodity.comimg" style="width: 150px;height: 150px">
+                            <img slot="reference" :src="'../'+scope.row.commodity.comimg" style="width: 100px;height: 100px">
+                          </el-popover>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordercount"
+                        label="数量"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="user.username"
+                        label="用户名"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="shangHuInfo.shaddress"
+                        label="商户地址"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="ordertime"
+                        label="订单时间"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        prop="totalmoney"
+                        label="总金额"
+                        align="center">
+                      </el-table-column>
+                      <el-table-column
+                        label="订单状态"
+                        align="center">
+                        <template slot-scope="scope">
+                          {{ scope.row.orderstate == 1 ? '待发货' : scope.row.orderstate == 2 ?'待收货': scope.row.orderstate == 3 ?'待提货': scope.row.orderstate == 4 ?'已提货': '' }}
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        fixed="right"
+                        label="操作"
+                        align="center" width="200">
+                        <template slot-scope="scope">
+
+
+                          <!--  <el-button type="danger" slot="reference" round v-if="scope.row.orderstate==0" @click="fuKuan(scope.row)">付   款</el-button>
+                            <el-popconfirm
+                              title="确定取消吗？"
+                            >
+                              <el-button type="danger" slot="reference" round v-if="scope.row.orderstate==1">取消订单</el-button>
+                            </el-popconfirm>
+                            <el-button type="danger" slot="reference" round v-if="scope.row.orderstate==2||scope.row.orderstate==3">确认收货</el-button>
+
+    -->
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <br>
+                    <el-pagination
+                      background
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :page-sizes="[5, 10, 15, 20]"
+                      :page-size="sizeShangHu"
+                      :total="totalShangHu"
+                      :current-page="currentpageShangHu"
+                      @prev-click="prvpageShangHu"
+                      @next-click="nextpageShangHu"
+                      @current-change="currentchangeShangHu"
+                      @size-change="sizechangeShangHu">
+                    </el-pagination>
+                  </div>
                 </el-tab-pane>
               </el-tabs>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </el-tab-pane>
@@ -623,12 +1017,27 @@
         isdaiFaHuo:false,
         isdaiShouHuo:false,
         isyiShouHuo:false,
+        shangHu:'shangHuGuanLi',
+        isShangHuGuanLi:true,
+        isShangHuDingDan:false,
+        shangDingDan:'shangQuanBu',
+        isShangQuanBu:true,
+        isShangDaiFaHuo:false,
+        isShangDaiShouHuo:false,
+        isShangDaiTiHuo:false,
+        isShangYiTiHuo:false,
         orders:[],
+        shangHuOrders:[],
         pageindex:1,//当前显示页面
         totalpage:0,//总页面
         total:0,  //总条目数
         size:5,  //每页显示多少条
         currentpage:1,
+        pageindexShangHu:1, //商户订单当前显示页面
+        totalpageShangHu:0, //商户总页面
+        totalShangHu:0,     //商户总条目数
+        sizeShangHu:5,      //每页显示多少条
+        currentpageShangHu:1,
         usersh:sessionStorage.getItem("usersh"),
         addform: {
           shname:'',
@@ -668,19 +1077,20 @@
         area:[],
         pid:0,
         cid:0,
-        aid:0
+        aid:0,
+        YongHuNum:0,
+        ShangHuNum:0
       }
     },
     methods:{
-      getorder(num){
+      //查询用户订单
+      getorder(){
         var _this = this;
         var params = new URLSearchParams();
         params.append("page",_this.pageindex);
         params.append("rows",_this.size);
         params.append("userid",sessionStorage.getItem("userid"));
-        if(num!=null){
-          params.append("orderstate",num);
-        }
+        params.append("orderstate",this.YongHuNum);
         this.$axios.post("queryUserOrderCount.action",params).then(function (result) {  //成功  执行then里面的方法
           _this.orders = result.data.rows;
           console.log(_this.orders)
@@ -688,6 +1098,27 @@
           //计算总页数
           _this.total=result.data.total;
           _this.totalpage=_this.total%_this.size==0?_this.total/_this.size:Math.floor(_this.total/_this.size)+1
+
+        }).catch(function (error) { //失败 执行catch方法
+          console.log(error)
+        });
+      },
+
+      //查询商户订单
+      getShangHuOrder(){
+        var _this = this;
+        var params = new URLSearchParams();
+        params.append("page",_this.pageindexShangHu);
+        params.append("rows",_this.sizeShangHu);
+        params.append("shid",sessionStorage.getItem("shid"));
+        params.append("orderstate",this.ShangHuNum);
+        this.$axios.post("queryShangHuOrderCount.action",params).then(function (result) {  //成功  执行then里面的方法
+          _this.shangHuOrders = result.data.rows;
+          console.log(_this.shangHuOrders)
+
+          //计算总页数
+          _this.totalShangHu=result.data.total;
+          _this.totalpageShangHu=_this.totalShangHu%_this.sizeShangHu==0?_this.totalShangHu/_this.sizeShangHu:Math.floor(_this.totalShangHu/_this.sizeShangHu)+1
 
         }).catch(function (error) { //失败 执行catch方法
           console.log(error)
@@ -714,6 +1145,28 @@
         this.size=val
         this.getorder();
       },
+
+      //上一页（商户订单）
+      prvpageShangHu:function () {
+        this.pageindexShangHu=this.pageindexShangHu==1?1:this.pageindexShangHu-1;
+        this.getShangHuOrder();
+      },
+      //下一页（商户订单）
+      nextpageShangHu:function () {
+        this.pageindexShangHu=this.pageindexShangHu==this.totalpageShangHu?this.totalpageShangHu:this.pageindexShangHu+1;
+        this.getShangHuOrder();
+      },
+      //当前第一页（商户订单）
+      currentchangeShangHu(val){
+        this.pageindexShangHu=val;
+        this.getShangHuOrder();
+      },
+      //每页多少条（商户订单）
+      sizechangeShangHu(val){
+        this.sizeShangHu=val
+        this.getShangHuOrder();
+      },
+
       updateuser(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -863,6 +1316,7 @@
           }
         });
       },
+      //点击用户不同订单信息
       click(tab){
         this.pageindex=1;
         if(tab.name=="quanBu"){
@@ -871,53 +1325,73 @@
           this.isdaiFaHuo=false;
           this.isdaiShouHuo=false;
           this.isyiShouHuo=false;
-          this.getorder(null);
+          this.YongHuNum=0;
+          this.getorder(this.YongHuNum);
         }else if(tab.name=="daiFuKuan"){
           this.isquanBu=false;
           this.isdaiFuKuan=true;
           this.isdaiFaHuo=false;
           this.isdaiShouHuo=false;
           this.isyiShouHuo=false;
-          this.pageindex=1
-          this.getorder(1);
+          this.YongHuNum=1;
+          this.getorder(this.YongHuNum);
         }else if(tab.name=="daiFaHuo"){
           this.isquanBu=false;
           this.isdaiFuKuan=false;
           this.isdaiFaHuo=true;
           this.isdaiShouHuo=false;
           this.isyiShouHuo=false;
-          this.getorder(2);
+          this.YongHuNum=2;
+          this.getorder(this.YongHuNum);
         }else if(tab.name=="daiShouHuo"){
           this.isquanBu=false;
           this.isdaiFuKuan=false;
           this.isdaiFaHuo=false;
           this.isdaiShouHuo=true;
           this.isyiShouHuo=false;
-          this.getorder(3);
+          this.YongHuNum=3;
+          this.getorder(this.YongHuNum);
         }else if(tab.name=="yiShouHuo"){
           this.isquanBu=false;
           this.isdaiFuKuan=false;
           this.isdaiFaHuo=false;
           this.isdaiShouHuo=false;
           this.isyiShouHuo=true;
-          this.getorder(5);
+          this.YongHuNum=5;
+          this.getorder(this.YongHuNum);
         }
       },
+      //左侧菜单栏选择
       select(tab){
         if(tab.name=="dingdan"){
           if(this.isquanBu==true){
-            this.getorder(null);
+            this.getorder(this.YongHuNum);
           }else if(this.isdaiFuKuan==true){
-            this.getorder(1);
+            this.getorder(this.YongHuNum);
           }else if(this.isdaiFaHuo==true){
-            this.getorder(2);
+            this.getorder(this.YongHuNum);
           }else if(this.isdaiShouHuo==true){
-            this.getorder(3);
+            this.getorder(this.YongHuNum);
           }else if(this.isyiShouHuo==true){
-            this.getorder(5);
+            this.getorder(this.YongHuNum);
+          }
+        }else if(tab.name=="guanLi"){
+          if(this.shangHu=="shangHuDingDan"){
+            if(this.isShangQuanBu==true){
+              this.getShangHuOrder(this.ShangHuNum);
+            }else if(this.isShangDaiFaHuo==true){
+              this.getShangHuOrder(this.ShangHuNum);
+            }else if(this.isShangDaiShouHuo==true){
+              this.getShangHuOrder(this.ShangHuNum);
+            }else if(this.isShangDaiTiHuo==true){
+              this.getShangHuOrder(this.ShangHuNum);
+            }else if(this.isShangYiTiHuo==true){
+              this.getShangHuOrder(this.ShangHuNum);
+            }
           }
         }
       },
+      //用户确认收货
       shouHuo(scope){
         if(scope.orderstate==2){
           this.$message({
@@ -977,6 +1451,7 @@
           console.log(error)
         });
       },
+      //取消用户订单（待发货）
       quXiao(scope){
         var _this = this;
         var params = new URLSearchParams();
@@ -1004,7 +1479,6 @@
       },
       //用户删除已到货的商品
       YongHushanchu(scope){
-        alert(scope.orderid)
         var _this = this;
         var params = new URLSearchParams();
         params.append("orderid",scope.orderid);
@@ -1024,6 +1498,98 @@
             _this.getorder(3);
           }else if(_this.isyiShouHuo==true){
             _this.getorder(5);
+          }
+        }).catch(function (error) { //失败 执行catch方法
+          console.log(error)
+        });
+      },
+      //商户订单点击
+      clickShangHu(tab){
+        this.pageindexShangHu=1;
+        if(tab.name=="shangQuanBu"){
+          this.isShangQuanBu=true;
+          this.isShangDaiFaHuo=false;
+          this.isShangDaiShouHuo=false;
+          this.isShangDaiTiHuo=false;
+          this.isShangYiTiHuo=false;
+          this.ShangHuNum=0;
+          this.getShangHuOrder(this.ShangHuNum);
+        }else if(tab.name=="shangDaiFaHuo"){
+          this.isShangQuanBu=false;
+          this.isShangDaiFaHuo=true;
+          this.isShangDaiShouHuo=false;
+          this.isShangDaiTiHuo=false;
+          this.isShangYiTiHuo=false;
+          this.ShangHuNum=1;
+          this.getShangHuOrder(this.ShangHuNum);
+        }else if(tab.name=="shangDaiShouHuo"){
+          this.isShangQuanBu=false;
+          this.isShangDaiFaHuo=false;
+          this.isShangDaiShouHuo=true;
+          this.isShangDaiTiHuo=false;
+          this.isShangYiTiHuo=false;
+          this.ShangHuNum=2;
+          this.getShangHuOrder(this.ShangHuNum);
+        }else if(tab.name=="shangDaiTiHuo"){
+          this.isShangQuanBu=false;
+          this.isShangDaiFaHuo=false;
+          this.isShangDaiShouHuo=false;
+          this.isShangDaiTiHuo=true;
+          this.isShangYiTiHuo=false;
+          this.ShangHuNum=3;
+          this.getShangHuOrder(this.ShangHuNum);
+        }else if(tab.name=="shangYiTiHuo"){
+          this.isShangQuanBu=false;
+          this.isShangDaiFaHuo=false;
+          this.isShangDaiShouHuo=false;
+          this.isShangDaiTiHuo=false;
+          this.isShangYiTiHuo=true;
+          this.ShangHuNum=5;
+          this.getShangHuOrder(this.ShangHuNum);
+        }
+      },
+      //商户管理选择
+      selectShangHu(tab){
+        if(tab.name=="shangHuGuanLi"){
+          this.isShangHuGuanLi=true;
+          this.isShangHuDingDan=false;
+        }else if(tab.name=="shangHuDingDan"){
+          this.isShangHuGuanLi=false;
+          this.isShangHuDingDan=true;
+          if(this.isShangQuanBu==true){
+            this.getShangHuOrder(this.ShangHuNum);
+          }else if(this.isShangDaiFaHuo==true){
+            this.getShangHuOrder(this.ShangHuNum);
+          }else if(this.isShangDaiShouHuo==true){
+            this.getShangHuOrder(this.ShangHuNum);
+          }else if(this.isShangDaiTiHuo==true){
+            this.getShangHuOrder(this.ShangHuNum);
+          }else if(this.isShangYiTiHuo==true){
+            this.getShangHuOrder(this.ShangHuNum);
+          }
+        }
+      },
+      //商户确认收货
+      shangHuShouHuo(scope){
+        var _this = this;
+        var params = new URLSearchParams();
+        params.append("orderid",scope.orderid);
+        this.$axios.post("updOrder3.action",params).then(function (result) {  //成功  执行then里面的方法
+          _this.$message({
+            showClose: true,
+            message:result.data,
+            type: 'success'
+          });
+          if(_this.isShangQuanBu==true){
+            _this.getShangHuOrder(_this.ShangHuNum);
+          }else if(_this.isShangDaiFaHuo==true){
+            _this.getShangHuOrder(_this.ShangHuNum);
+          }else if(_this.isShangDaiShouHuo==true){
+            _this.getShangHuOrder(_this.ShangHuNum);
+          }else if(_this.isShangDaiTiHuo==true){
+            _this.getShangHuOrder(_this.ShangHuNum);
+          }else if(_this.isShangYiTiHuo==true){
+            _this.getShangHuOrder(_this.ShangHuNum);
           }
         }).catch(function (error) { //失败 执行catch方法
           console.log(error)
