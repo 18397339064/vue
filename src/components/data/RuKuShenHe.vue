@@ -40,11 +40,7 @@
           fixed="right"
           label="操作">
           <template slot-scope="scope" v-if="scope.row.purstate=='未审核' ">
-            <el-popconfirm @confirm="puryes(scope.row)"
-                           title="确定通过吗？"
-            >
-              <el-button type="primary" slot="reference" round >通过</el-button>
-            </el-popconfirm>
+              <el-button type="primary" round @click="shenhe(scope.row)">审核</el-button>
             <el-popconfirm @confirm="purno(scope.row.purid)"
                            title="确定驳回吗？"
             >
@@ -66,6 +62,28 @@
         @current-change="currentchange"
         @size-change="sizechange">
       </el-pagination>
+
+      <!--审核-->
+      <el-dialog title="分配仓库" :visible.sync="fenpeiwh" width="40%" center>
+        <el-form label-width="80px" >
+          <el-form-item label="仓库名" >
+            <el-select v-model="whid"  placeholder="请选择仓库">
+              <el-option v-for="w in warehouse" :label="w.whname" :value="w.whid"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="数量" >
+            <el-input v-model="count" readonly style="width: 300px"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="fenpeiwh = false">取 消</el-button>
+          <el-popconfirm @confirm="puryes"
+                         title="确定通过吗？"
+          >
+            <el-button type="danger" slot="reference" round >通过</el-button>
+          </el-popconfirm>
+        </div>
+      </el-dialog>
     </div>
 </template>
 
@@ -79,7 +97,13 @@
           totalpage:0,//总页面
           total:0,  //总条目数
           size:5,  //每页显示多少条
-          currentpage:1
+          currentpage:1,
+          fenpeiwh:false,
+          warehouse:[],
+          count:1,
+          purid:0,
+          whid:'',
+          comid:'',
         }
       },
       methods:{
@@ -123,9 +147,10 @@
         puryes(row){
           var _this = this;
           var params = new URLSearchParams();
-          params.append("purid",row.purid);
-          params.append("comid",row.commodity.comid);
-          params.append("purcount",row.purcount);
+          params.append("purid",_this.purid);
+          params.append("whid",_this.whid);
+          params.append("comid",_this.comid);
+          params.append("purcount",_this.count);
 
           this.$axios.post("updPurYes.action",params).then(function (result) {  //成功  执行then里面的方法
 
@@ -135,6 +160,7 @@
             });
 
             _this.getData();
+            _this.fenpeiwh=false;
 
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
@@ -154,6 +180,27 @@
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
+        },
+        shenhe(row){
+          this.fenpeiwh=true;
+
+          var _this=this;
+          _this.purid=row.purid;
+          _this.comid=row.commodity.comid;
+          _this.count=row.purcount;
+
+          var params = new URLSearchParams();
+          params.append("comid",row.commodity.comid);
+
+          this.$axios.post("querycomct.action",params).then(function (result) {  //成功  执行then里面的方法
+
+            _this.warehouse=result.data;
+            _this.whid=_this.warehouse[0].whid
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
+
         }
       },
       created:function(){

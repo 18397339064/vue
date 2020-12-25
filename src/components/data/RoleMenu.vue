@@ -67,7 +67,10 @@
           },
           getdata() {  //获取数据
             var _this = this;
-            this.$axios.post("queryAuthorMenu.action").then(function (result) {  //成功  执行then里面的方法
+            var params=new URLSearchParams();
+
+            params.append("staid",sessionStorage.getItem("staffid"))
+            this.$axios.post("queryAuthorMenu.action",params).then(function (result) {  //成功  执行then里面的方法
               _this.menuDate = result.data;
 
             }).catch(function (error) { //失败 执行catch方法
@@ -100,7 +103,6 @@
             var _this=this;
 
             _this.menuids=this.$refs.tree.getCheckedKeys();
-
             _this.menuids.forEach((item)=>{
               _this.mids+=item+','
             })

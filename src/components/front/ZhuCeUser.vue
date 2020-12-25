@@ -20,7 +20,7 @@
             <el-input style="width: 300px" v-model="zhuceform.zhuceuserpwd2" type="password" placeholder="确认密码"></el-input>
           </el-form-item>
         </el-form>
-        <label style="font-size: 10px;float: right;padding-right: 10px"><a href="#" style="text-decoration:none;color: black">已有账号？去登录</a></label>
+        <label style="font-size: 10px;float: right;padding-right: 10px"><a href="#" @click.prevent="login" style="text-decoration:none;color: black">已有账号？去登录</a></label>
         <br>
         <div slot="footer" class="dialog-footer" style="margin-left: 40px">
           <el-button type="primary" style="width: 320px;" @click="zhuceuser('zhuceformref')">注册</el-button>
@@ -115,6 +115,10 @@
             .catch(function (error) {
               console.log(error)
             });
+        },
+        //跳转用户登录
+        login(){
+          this.$parent.comname="userlogin";
         }
       }
     }

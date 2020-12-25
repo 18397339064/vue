@@ -1,13 +1,20 @@
 <template>
-    <div id="app">
+    <div id="app" style="background-color: whitesmoke">
       <br>
-      <div style="">
-        <el-input
-          placeholder="请输入商品"
-          clearable
-        style="width: 500px;margin-left: 400px;border: 2px solid red;background-color: red">
-          <el-button slot="append" icon="el-icon-search" style="background-color: red;border: 2px solid red;position: relative;margin-right: -22px"></el-button>
-        </el-input>
+      <div>
+        <el-row>
+          <el-col :span="6">
+            <img src="img/4.png" style="width: 200px;margin-left: 150px;">
+          </el-col>
+          <el-col :span="6" style="margin-top: 8px;">
+            <el-input
+              placeholder="请输入商品"
+              clearable
+              style="width: 500px;margin-left: 100px;border: 2px solid red;background-color: red">
+              <el-button slot="append" icon="el-icon-search" style="background-color: red;border: 2px solid red;position: relative;margin-right: -22px"></el-button>
+            </el-input>
+          </el-col>
+        </el-row>
       </div>
       <br>
       <el-carousel :interval="5000" arrow="always" height="300px" type="card">
@@ -72,7 +79,7 @@
           });
         },
         ShoppingXQ(comid){
-          alert(comid)
+          /*alert(comid)*/
            this.$router.push({
               name:"Commodity",
               params:{

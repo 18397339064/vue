@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import NavMenu from "./components/front/NavMenu";
+import NavMenu from "./components/front/NavMenu.vue";
 
 import Router from './router/routerconfig.js'
 import ElementUI from 'element-ui'
@@ -18,6 +18,7 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
 import app from "./app.vue";
+import JieSuan from "./components/front/JieSuan";
 new Vue({
   el: '#app',
   render: h => h(app),

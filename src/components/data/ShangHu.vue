@@ -468,9 +468,6 @@
             }else if(result.data.code=="3"){
               _this.$message.error(result.data.msg);
               _this.addform.username='';
-            }else if(result.data.code=="4"){
-              _this.$message.error(result.data.msg);
-              _this.addform.username='';
             }
           })
           .catch(function (error) {

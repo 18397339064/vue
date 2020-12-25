@@ -5,16 +5,17 @@ import VueRouter from 'vue-router'
 import StaffLogin from '../components/backstage/staffLogin.vue'
 import Backstage from '../components/backstage/backstage.vue'
 import Commodity from '../components/front/Commodity.vue'
-import NavMenu from "../components/front/NavMenu";
+import NavMenu from "../components/front/NavMenu.vue";
 
 //使用vue-router组件
 Vue.use(VueRouter)
 
 //组装路由数组
 var routes=[
-	{path:"/stafflogin", component:StaffLogin},
+	{path:"/stafflogin",component:StaffLogin},
   {path:"/backstage",component:Backstage},
   {path:"/commodity",name:"Commodity",component: Commodity},
+  {path:"/navmenu",component:NavMenu},
   {path:"/",component:NavMenu}
 ]
 

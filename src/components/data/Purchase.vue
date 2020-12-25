@@ -31,7 +31,11 @@
       </el-table-column>
       <el-table-column
         prop="purcount"
-        label="商品数量">
+        label="商品数量"
+        width="300px">
+        <template slot-scope="scope">
+          <el-input-number  v-model="scope.row.purcount" :min="1"></el-input-number>
+        </template>
       </el-table-column>
 
       <el-table-column
@@ -304,8 +308,14 @@
           this.addformcom.comname=row.comname;
         },
         addPurchase(){
-
           var _this=this;
+          if(_this.tabData.length==0){
+            _this.$message({
+              message: '请先采购商品',
+              type: 'warning'
+            });
+            return;
+          }
           this.$axios({
             method: 'post',
             url: 'addPurchase.action',

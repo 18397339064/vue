@@ -59,22 +59,31 @@
               this.$router.go(-1);
             },
             jiaRu(commodity){
-              var _this = this;
-              var params = new URLSearchParams();
-              params.append("userid",sessionStorage.getItem("userid"));
-              params.append("comid",commodity.comid);
-              params.append("shopCount",_this.count);
-              this.$axios.post("addShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
-                _this.$message({
-                  showClose: true,
-                  message: result.data,
-                  type: 'success'
-                })
-                _this.$router.go(-1);
+              if (sessionStorage.getItem("userid") == null) {
+                this.$message({
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                this.$router.push("navmenu");
+                return;
+              }else{
+                var _this = this;
+                var params = new URLSearchParams();
+                params.append("userid",sessionStorage.getItem("userid"));
+                params.append("comid",commodity.comid);
+                params.append("shopCount",_this.count);
+                this.$axios.post("addShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
+                  _this.$message({
+                    showClose: true,
+                    message: result.data,
+                    type: 'success'
+                  })
+                  _this.$router.go(-1);
 
-              }).catch(function (error) { //失败 执行catch方法
-                console.log(error)
-              });
+                }).catch(function (error) { //失败 执行catch方法
+                  console.log(error)
+                });
+              }
             }
         },
         created() {
