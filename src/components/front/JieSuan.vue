@@ -1,7 +1,7 @@
 <template>
     <div>
       <br>
-      <el-page-header content="结算">
+      <el-page-header content="结算"  @back="goBack">
       </el-page-header>
       <br>
       <hr>
@@ -38,27 +38,27 @@
         </el-drawer>
       </div>
       <el-table
-        :data="jiesuancom">
+        :data="selectshop">
         <el-table-column
           width="150px">
           <template slot-scope="scope">
             <el-popover placement="right-end" trigger="hover">
-              <img :src="scope.row.comimg" style="width: 150px;height: 150px">
-              <img slot="reference" :src="scope.row.comimg" style="width: 100px;height: 100px">
+              <img :src="scope.row.commodity.comimg" style="width: 150px;height: 150px">
+              <img slot="reference" :src="scope.row.commodity.comimg" style="width: 100px;height: 100px">
             </el-popover>
           </template>
         </el-table-column>
         <el-table-column
-          prop="comname"
+          prop="commodity.comname"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="comprice"
+          prop="commodity.comprice"
           width="140px"
           align="center"
         >
           <template slot-scope="scope">
-            <span style="color:orangered"><b>￥{{scope.row.comprice}}/件</b></span>
+            <span style="color:orangered"><b>￥{{scope.row.commodity.comprice}}/件</b></span>
           </template>
         </el-table-column>
         <el-table-column
@@ -66,21 +66,21 @@
           width="250px"
           align="center">
           <template slot-scope="scope">
-            <el-input-number  v-model="scope.row.shopCount" :min="1" :max="100" ></el-input-number>
+            <el-input-number :name="scope.$index+''"  v-model="scope.row.shopCount" :min="1"  @blur="number" @change="number1(scope.row)"></el-input-number>
           </template>
         </el-table-column>
         <el-table-column align="center">
           <template slot-scope="scope">
-            <span style="color:orangered"><b>￥{{scope.row.comprice*scope.row.shopCount}}</b></span>
+            <span style="color:orangered"><b>￥{{scope.row.commodity.comprice*scope.row.shopCount}}</b></span>
           </template>
         </el-table-column>
       </el-table>
       <br>
       <div>&nbsp;&nbsp;
-        共<span>0</span>件商品
+        共<span>{{selectshop.length}}</span>件商品
 
-        <span style="padding-left: 1000px">合计：0元</span>
-        <el-button type="danger"  style="float: right">去结算</el-button>
+        <span style="padding-left: 1000px">合计：{{zongprice}}元</span>
+        <a style="float: right;margin-right: 150px" @click="zhifu"><img :src="zfb" style="width: 100px"></a>
       </div>
     </div>
 </template>
@@ -90,16 +90,15 @@
         name: "JieSuan",
       data(){
           return {
-            jiesuancom:[
-              {shid:1,comname:'凤梨酥',comimg:'../img/凤梨酥.png',shopCount:20,comprice:20,zongprice:400},
-              {shid:2,comname:'华夫饼',comimg:'../img/华夫饼.png',shopCount:20,comprice: 20,zongprice:400}
-            ],
+            selectshop:this.$route.params.selectshop,
+            zongprice:this.$route.params.zongprice,
             username:'',
             userphone:'',
             shaddress:'',
             drawer: false,
             direction: 'rtl',
-            shanghus:[]
+            shanghus:[],
+            zfb:'../img/支付宝.jpg'
           }
       },
       methods:{
@@ -112,6 +111,7 @@
         },
         getData() {  //获取数据
           var _this = this;
+          console.log(_this.selectshop)
           var params = new URLSearchParams();
           params.append("shstate","已通过");
 
@@ -129,7 +129,53 @@
           this.username=val.user.username;
           this.userphone=val.user.userphone;
           this.shaddress=val.shaddress
-        }
+        },
+        goBack(){
+          this.$router.go(-1);
+        },
+        //通过计数器控制数量改价格
+        number1(spoce){
+          var _this = this;
+
+          _this.zongprice=0;
+          console.log(_this.selectshop.length)
+          for(var i=0;i<_this.selectshop.length;i++){
+            _this.zongprice+=_this.selectshop[i].shopCount*_this.selectshop[i].commodity.comprice
+          }
+          var params = new URLSearchParams();
+          params.append("shopid",spoce.shopid);
+          params.append("shopCount",spoce.shopCount);
+          this.$axios.post("updShoppingCarShu.action",params).then(function (result) {  //成功  执行then里面的方法
+            /*_this.$message({
+              showClose: true,
+              message:result.data,
+              type: 'success'
+            });*/
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
+        },
+        zhifu(){
+          alert("支付成功")
+        },
+        number(event){
+          if(event.target.value=='' || isNaN(event.target.value)){
+
+            var index = event.target.getAttribute("name")  ;
+            console.log(index)
+            this.shop[index].shopCount = 1;
+            this.zongprice=0;
+            for(var i=0;i<this.selectshop.length;i++){
+              this.zongprice+=this.selectshop[i].shopCount*this.selectshop[i].commodity.comprice
+            }
+          }else{
+            this.zongprice=0;
+            for(var i=0;i<this.selectshop.length;i++){
+              this.zongprice+=this.selectshop[i].shopCount*this.selectshop[i].commodity.comprice
+            }
+          }
+        },
       },
       created() {
           this.getData();
