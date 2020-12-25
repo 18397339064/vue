@@ -15,7 +15,8 @@ var routes=[
 	{path:"/stafflogin",component:StaffLogin},
   {path:"/backstage",component:Backstage},
   {path:"/commodity",name:"Commodity",component: Commodity},
-  {path:"/",name:"navmenu",component:NavMenu}
+  {path:"/navmenu",component:NavMenu},
+  {path:"/",component:NavMenu}
 ]
 
 //将路由数组应用到路由管理器中

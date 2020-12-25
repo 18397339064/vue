@@ -68,7 +68,7 @@
               sessionStorage.setItem("shname",result.data.shname)
               sessionStorage.setItem("shaddress",result.data.shaddress)
 
-              _this.$parent.username=sessionStorage.getItem("username");
+              _this.$parent.useraccount=sessionStorage.getItem("useraccount");
 
               _this.$parent.comname="index";
 

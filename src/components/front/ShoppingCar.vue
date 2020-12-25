@@ -74,7 +74,7 @@
         </el-table>
         <br>
         <div>
-          <el-button type="text">继续购物</el-button>&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-button type="text" @click="jixushop">继续购物</el-button>&nbsp;&nbsp;&nbsp;&nbsp;
           共<span>{{shop.length}}</span>件商品，已选择<span>{{selectcount}}</span>件
 
           <span style="padding-left: 800px">合计：{{zongprice}}元</span>
@@ -202,6 +202,9 @@
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
+        },
+        jixushop(){
+          this.$parent.comname="index";
         }
       },
       created() {
