@@ -17,9 +17,10 @@
           <h4>总销售&nbsp;&nbsp;&nbsp;<span style="font-size: 20px;color: red;">{{commodity.comnum}}</span></h4>
           <h4>产地&nbsp;&nbsp;&nbsp;<span>{{commodity.complace}}</span></h4>
           <h4>规格&nbsp;&nbsp;&nbsp;<span>{{commodity.comsperifications}}</span></h4>
-          <h5>数量&nbsp;&nbsp;&nbsp;<el-input-number v-model="count" :min="1" :max="100"></el-input-number></h5>
+          <h5  v-if="stockcount!=0">数量&nbsp;&nbsp;&nbsp;<el-input-number v-model="count" :min="1" :max="stockcount"></el-input-number></h5>
           <h5>库存量&nbsp;&nbsp;&nbsp;<span>{{stockcount}}</span></h5>
-          <el-button type="danger" @click="jiaRu(commodity)">加入购物车</el-button>
+          <el-button v-if="stockcount!=0" type="danger" @click="jiaRu(commodity)">加入购物车</el-button>
+          <el-button v-if="stockcount==0" type="danger">库存不足</el-button>
         </div>
       </div>
       <br>
@@ -68,21 +69,26 @@
                 return;
               }else{
                 var _this = this;
-                var params = new URLSearchParams();
-                params.append("userid",sessionStorage.getItem("userid"));
-                params.append("comid",commodity.comid);
-                params.append("shopCount",_this.count);
-                this.$axios.post("addShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
-                  _this.$message({
-                    showClose: true,
-                    message: result.data,
-                    type: 'success'
-                  })
-                  _this.$router.go(-1);
+                if(_this.stockcount<_this.count){
+                  _this.$message.error("库存量不足")
+                  return;
+                }else{
+                  var params = new URLSearchParams();
+                  params.append("userid",sessionStorage.getItem("userid"));
+                  params.append("comid",commodity.comid);
+                  params.append("shopCount",_this.count);
+                  this.$axios.post("addShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
+                    _this.$message({
+                      showClose: true,
+                      message: result.data,
+                      type: 'success'
+                    })
+                    _this.$router.go(-1);
 
-                }).catch(function (error) { //失败 执行catch方法
-                  console.log(error)
-                });
+                  }).catch(function (error) { //失败 执行catch方法
+                    console.log(error)
+                  });
+                }
               }
             },
             getStockCount(){

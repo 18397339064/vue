@@ -79,9 +79,15 @@
       <div>&nbsp;&nbsp;
         共<span>{{selectshop.length}}</span>件商品
 
-        <span style="padding-left: 1000px">合计：{{zongprice}}元</span>
+        <span style="padding-left: 1000px;color:orangered">合计：￥{{zongprice}}元</span>
         <a style="float: right;margin-right: 150px" @click="zhifu"><img :src="zfb" style="width: 100px"></a>
       </div>
+      <!-- 添加模态框-->
+      <el-dialog id="paydialog" title="支付" :visible.sync="dialogFormVisible">
+        <div id="mydiv">
+
+        </div>
+      </el-dialog>
     </div>
 </template>
 
@@ -98,7 +104,11 @@
             drawer: false,
             direction: 'rtl',
             shanghus:[],
-            zfb:'../img/支付宝.jpg'
+            zfb:'../img/支付宝.jpg',
+            tradeno:'FM',
+            number2:'20201230001',
+            dialogFormVisible:false,
+            shopName:'',
           }
       },
       methods:{
@@ -136,7 +146,6 @@
         //通过计数器控制数量改价格
         number1(spoce){
           var _this = this;
-
           _this.zongprice=0;
           console.log(_this.selectshop.length)
           for(var i=0;i<_this.selectshop.length;i++){
@@ -157,7 +166,31 @@
           });
         },
         zhifu(){
-          alert("支付成功")
+          this.dialogFormVisible=true;
+
+          var _this = this;
+          var params = new URLSearchParams();
+          params.append("price",_this.zongprice);
+          params.append("tradeno",_this.tradeno+_this.number2);
+          _this.selectshop.forEach((item)=>{
+            _this.shopName = _this.shopName + item.commodity.comname+',';
+          })
+          params.append("tradename",_this.shopName);
+          console.log(_this.shopName)
+          _this.number2=Number(_this.number2)+Number(1);
+          this.$axios.post("pay.action",params).then(function (result) {  //成功  执行then里面的方法
+            var bodystr = result.data;  //后端返回的支付页面代码
+            console.log(bodystr)
+            bodystr=bodystr.substr(0,bodystr.indexOf("<script>"));
+            console.log(bodystr)
+            document.getElementById("mydiv").innerHTML=bodystr;
+            document.forms[0].submit();   //返回代码中需要表单提交得到真实的支付页面
+
+
+
+          }).catch(function (error) { //失败 执行catch方法
+
+          });
         },
         number(event){
           if(event.target.value=='' || isNaN(event.target.value)){

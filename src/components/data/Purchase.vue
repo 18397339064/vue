@@ -23,7 +23,7 @@
             <img :src="scope.row.comimg" style="width: 50px;height: 50px">
             <img slot="reference" :src="'../'+scope.row.comimg" style="width: 50px;height: 50px">
           </el-popover>
-        </template>purcount
+        </template>
       </el-table-column>
       <el-table-column
         prop="jinprice"
@@ -43,6 +43,17 @@
         label="商品总价">
         <template slot-scope="scope">
            <span style="color: orange">{{ scope.row.purcount * scope.row.jinprice}}￥</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作">
+        <template slot-scope="scope">
+          <el-popconfirm @confirm="delePur(scope.row.comid)"
+                         title="确定删除吗？"
+          >
+            <el-button type="danger" slot="reference" round >删除</el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -334,6 +345,14 @@
           })
 
           _this.tabData.splice(0);
+        },
+        delePur(id){
+          var _this=this;
+          _this.tabData=this.tabData.filter((item)=>{
+
+            return id!=item.comid;
+          })
+
         }
       }
     }
