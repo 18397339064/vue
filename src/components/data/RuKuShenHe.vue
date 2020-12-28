@@ -450,6 +450,7 @@
             return;
           }
 
+          alert(JSON.stringify(_this.manyWarehouseData));
           this.$axios({
             method: 'post',
             url: 'manyWarehouseUpdPurYes.action',
@@ -513,6 +514,13 @@
           this.queryStockCapacity();
 
         },
+        manyfenpeiwh:function (newval,oldval) {
+
+          if(newval==false){
+            this.manyWarehouseData.splice(0);
+          }
+        }
+
     }
     }
 </script>
