@@ -151,10 +151,10 @@
           <el-select v-model="updateform.ctid" placeholder="请选择仓库类型">
             <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
           </el-select>
-        </el-form-item><!--
+        </el-form-item>
         <el-form-item label="容量">
           <el-input v-model="updateform.capacity" readonly></el-input>
-        </el-form-item>-->
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updatewarehousedialog = false">取 消</el-button>
@@ -181,8 +181,8 @@
         addform: {
           whname:'',
           whaddress:'',
-          ctid:''/*,
-          capacity:0*/
+          ctid:'',
+          capacity:0
         },
         addforms:{
           whname: [
@@ -195,11 +195,11 @@
           ],
           ctid:[
             { required: true, message: '请选择商品类型', trigger: 'change' }
-          ]/*,
+          ],
           capacity:[
             { required: true, message: "容量不能为空", trigger: "blur" },
             { type: 'number', message: '容量必须为数字值',trigger: "blur" }
-          ]*/
+          ]
         },
         updatewarehousedialog:false,
         updateform:{
