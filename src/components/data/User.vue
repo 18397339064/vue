@@ -131,7 +131,8 @@
           <el-input v-model="updateform.updateusername"></el-input>
         </el-form-item>
         <el-form-item label="用户性别">
-          <el-input v-model="updateform.updateusersex" readonly></el-input>
+          <el-radio v-model="updateform.updateusersex" label="男">男</el-radio>
+          <el-radio v-model="updateform.updateusersex" label="女">女</el-radio>
         </el-form-item>
         <el-form-item label="用户电话" prop="updateuserphone">
           <el-input v-model="updateform.updateuserphone"></el-input>
@@ -340,6 +341,7 @@
             params.append("userid",_this.updateform.updateuserid);
             params.append("userpwd",_this.updateform.updateuserpwd);
             params.append("username",_this.updateform.updateusername);
+            params.append("usersex",_this.updateform.updateusersex);
             params.append("userphone",_this.updateform.updateuserphone);
 
 

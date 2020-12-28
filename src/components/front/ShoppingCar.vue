@@ -74,7 +74,7 @@
         </el-table>
         <br>
         <div>
-          <el-button type="text">继续购物</el-button>&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-button type="text" @click="jixushop">继续购物</el-button>&nbsp;&nbsp;&nbsp;&nbsp;
           共<span>{{shop.length}}</span>件商品，已选择<span>{{selectcount}}</span>件
 
           <span style="padding-left: 800px">合计：{{zongprice}}元</span>
@@ -102,7 +102,8 @@
             ],
             selectcount:0,
             zongprice:0,
-            userid: sessionStorage.getItem("userid")
+            userid: sessionStorage.getItem("userid"),
+            selectshop:[]
           }
       },
       methods:{
@@ -113,6 +114,9 @@
           for(var i=0;i<val.length;i++){
             this.zongprice+=val[i].shopCount*val[i].commodity.comprice
           }
+
+          console.log(val)
+          this.selectshop=val;
         },
         //通过计数器控制数量改价格
         number1(spoce){
@@ -123,11 +127,11 @@
           params.append("shopid",spoce.shopid);
           params.append("shopCount",spoce.shopCount);
           this.$axios.post("updShoppingCarShu.action",params).then(function (result) {  //成功  执行then里面的方法
-            _this.$message({
+            /*_this.$message({
               showClose: true,
               message:result.data,
               type: 'success'
-            });
+            });*/
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
@@ -186,6 +190,14 @@
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });*/
+
+          this.$router.push({
+            name:"jiesuan",
+            params:{
+              selectshop:this.selectshop,
+              zongprice:this.zongprice
+            }
+          })
         },
         shanchu(row){
           var _this = this;
@@ -202,6 +214,9 @@
           }).catch(function (error) { //失败 执行catch方法
             console.log(error)
           });
+        },
+        jixushop(){
+          this.$parent.comname="index";
         }
       },
       created() {

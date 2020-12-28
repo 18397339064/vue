@@ -18,7 +18,7 @@
           <h4>产地&nbsp;&nbsp;&nbsp;<span>{{commodity.complace}}</span></h4>
           <h4>规格&nbsp;&nbsp;&nbsp;<span>{{commodity.comsperifications}}</span></h4>
           <h5>数量&nbsp;&nbsp;&nbsp;<el-input-number v-model="count" :min="1" :max="100"></el-input-number></h5>
-          <br>
+          <h5>库存量&nbsp;&nbsp;&nbsp;<span>{{stockcount}}</span></h5>
           <el-button type="danger" @click="jiaRu(commodity)">加入购物车</el-button>
         </div>
       </div>
@@ -39,7 +39,8 @@
             img1:"../img/11.png",
             count:1,
             commodity:{},
-            id:""
+            id:"",
+            stockcount:0
           }
         },
         methods:{
@@ -50,7 +51,6 @@
               params.append("id",_this.id);
               this.$axios.post("queryById.action",params).then(function (result) {  //成功  执行then里面的方法
                 _this.commodity = result.data;
-                console.log(_this.commodity)
               }).catch(function (error) { //失败 执行catch方法
                 console.log(error)
               });
@@ -59,19 +59,39 @@
               this.$router.go(-1);
             },
             jiaRu(commodity){
+              if (sessionStorage.getItem("userid") == null) {
+                this.$message({
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                this.$router.push("navmenu");
+                return;
+              }else{
+                var _this = this;
+                var params = new URLSearchParams();
+                params.append("userid",sessionStorage.getItem("userid"));
+                params.append("comid",commodity.comid);
+                params.append("shopCount",_this.count);
+                this.$axios.post("addShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
+                  _this.$message({
+                    showClose: true,
+                    message: result.data,
+                    type: 'success'
+                  })
+                  _this.$router.go(-1);
+
+                }).catch(function (error) { //失败 执行catch方法
+                  console.log(error)
+                });
+              }
+            },
+            getStockCount(){
               var _this = this;
               var params = new URLSearchParams();
-              params.append("userid",sessionStorage.getItem("userid"));
-              params.append("comid",commodity.comid);
-              params.append("shopCount",_this.count);
-              this.$axios.post("addShoppingCar.action",params).then(function (result) {  //成功  执行then里面的方法
-                _this.$message({
-                  showClose: true,
-                  message: result.data,
-                  type: 'success'
-                })
-                _this.$router.go(-1);
-
+              params.append("comid",_this.id);
+              this.$axios.post("querystockcount.action",params).then(function (result) {  //成功  执行then里面的方法
+                _this.stockcount = result.data;
+                console.log(_this.stockcount)
               }).catch(function (error) { //失败 执行catch方法
                 console.log(error)
               });
@@ -79,6 +99,7 @@
         },
         created() {
         this.getDate();
+        this.getStockCount();
         }
     }
 </script>

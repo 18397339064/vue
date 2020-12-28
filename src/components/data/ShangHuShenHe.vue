@@ -33,11 +33,11 @@
           >
             <el-button type="primary" slot="reference" round >通过</el-button>
           </el-popconfirm>
-          <el-popconfirm @confirm="shanghuno(scope.row.shid)"
+         <!-- <el-popconfirm @confirm="shanghuno(scope.row.shid)"
                          title="确定驳回吗？"
           >
             <el-button type="danger" slot="reference" round >驳回</el-button>
-          </el-popconfirm>
+          </el-popconfirm>-->
         </template>
       </el-table-column>
     </el-table>
@@ -130,7 +130,7 @@
           console.log(error)
         });
       },
-      shanghuno(id){
+      /*shanghuno(id){
         var _this = this;
         var params = new URLSearchParams();
         params.append("shid",id);
@@ -144,7 +144,7 @@
         }).catch(function (error) { //失败 执行catch方法
           console.log(error)
         });
-      }
+      }*/
     },
     created:function(){
       this.getData();
