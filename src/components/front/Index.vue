@@ -10,34 +10,51 @@
             <el-input
               placeholder="请输入商品"
               clearable
-              style="width: 500px;margin-left: 100px;border: 2px solid red;background-color: red">
-              <el-button slot="append" icon="el-icon-search" style="background-color: red;border: 2px solid red;position: relative;margin-right: -22px"></el-button>
+              style="width: 500px;margin-left: 100px;border: 2px solid red;background-color: red"
+            v-model="comname" @change="getCom">
+              <el-button slot="append" icon="el-icon-search" style="background-color: red;border: 2px solid red;position: relative;margin-right: -22px"
+              @click="getCom"></el-button>
             </el-input>
           </el-col>
         </el-row>
       </div>
       <br>
-      <el-carousel :interval="5000" arrow="always" height="300px" type="card">
-        <el-carousel-item v-for="i in lunboimgs">
-          <h3><img :src="i.name"></h3>
-        </el-carousel-item>
-      </el-carousel>
 
-      <div v-for="cate in fenleiimgs">
-        <div class="am-container ">
-          <div class="shopTitle ">
-            <h3>{{cate.ctname}}</h3>
+      <div v-if="comname==''">
+        <el-carousel :interval="5000" arrow="always" height="300px" type="card">
+          <el-carousel-item v-for="i in lunboimgs">
+            <h3><img :src="i.name"></h3>
+          </el-carousel-item>
+        </el-carousel>
+        <div v-for="cate in fenleiimgs">
+          <div class="am-container ">
+            <div class="shopTitle ">
+              <h3>{{cate.ctname}}</h3>
+            </div>
           </div>
-        </div>
-        <el-row>
-          <hr>
+          <el-row>
+            <hr>
             <div  v-for="sp in cate.commodity">
               <el-col :span="4">
                 <div class="grid-content bg-purple"><img :src="sp.comimg"  class="img1" height="200px" width="200px" @click="ShoppingXQ(sp.comid)"></div>
                 <h4>{{sp.comname}}</h4>
               </el-col>
             </div>
+          </el-row>
+        </div>
+      </div>
+
+      <div v-if="comname!=''">
+        <br>
+        <el-row>
+          <div  v-for="com in commodity">
+            <el-col :span="4">
+              <div class="grid-content bg-purple"><img :src="com.comimg"  class="img1" height="200px" width="200px"></div>
+              <h4>{{com.comname}}</h4>
+            </el-col>
+          </div>
         </el-row>
+
       </div>
       <hr>
       <div>
@@ -66,7 +83,9 @@
               {name:"../img/8.png",spname:"机器猫最爱 铜锣烧 最美下午茶"},
               {name:"../img/9.png",spname:"超好吃华夫饼 美食诱惑 下午茶"}*/
             ],
-            category:[]
+            category:[],
+            comname:'',
+            commodity:[]
           }
         },
       methods:{
@@ -86,7 +105,19 @@
                 id:comid
               }
             })
-        }
+        },
+        getCom() {  //获取数据
+          var _this = this;
+          var params = new URLSearchParams();
+          params.append("comname",_this.comname);
+
+          this.$axios.post("queryAllCommodity.action",params).then(function (result) {  //成功  执行then里面的方法
+            _this.commodity = result.data.rows;
+
+          }).catch(function (error) { //失败 执行catch方法
+            console.log(error)
+          });
+        },
       },
       created() {
           this.getFenl();
