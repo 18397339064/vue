@@ -83,6 +83,7 @@
             _this.authorRoleMenudialog=true;
 
             var params = new URLSearchParams();
+
             params.append("rid",row.roleid);
             this.$axios.post("queryAllRoleMenu.action",params).then(function (result) {  //成功  执行then里面的方法
               for(var i=0;i<result.data.length;i++){
@@ -91,13 +92,14 @@
               _this.roleid=row.roleid;
               _this.rname=row.rolename
 
+              alert(_this.roleMenu.toString())
               _this.getdata();
             }).catch(function (error) { //失败 执行catch方法
               console.log(error)
             });
           },
           closeDialog(){
-            this.roleMenu=[];
+            this.roleMenu.splice(0);
           },
           author(){
             var _this=this;
@@ -115,8 +117,9 @@
                 message: result.data,
                 type: 'success'
               });
-
+              _this.mids='';
               _this.authorRoleMenudialog=false;
+
             }).catch(function (error) { //失败 执行catch方法
               console.log(error)
             })
