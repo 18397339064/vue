@@ -94,7 +94,7 @@
         totalpage:0,//总页面
         total:0,  //总条目数
         size:5,  //每页显示多少条
-        orderstate:"",
+        orderstate:'',
         currentpage:1,
         addcategorydialog:false,
         selectid:"" //复选框选中的id
@@ -104,7 +104,7 @@
       getData() {  //获取数据
         var _this = this;
         var params = new URLSearchParams();
-        params.append("orderstate",_this.orderstate);
+        params.append("orderstate",_this.orderstate==''?0:_this.orderstate);
         params.append("page",_this.pageindex);
         params.append("rows",_this.size);
 

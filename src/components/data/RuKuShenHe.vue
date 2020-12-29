@@ -513,6 +513,13 @@
           this.queryStockCapacity();
 
         },
+        manyfenpeiwh:function (newval,oldval) {
+
+          if(newval==false){
+            this.manyWarehouseData.splice(0);
+          }
+        }
+
     }
     }
 </script>
