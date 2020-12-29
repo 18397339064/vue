@@ -80,7 +80,7 @@
         共<span>{{selectshop.length}}</span>件商品
 
         <span style="padding-left: 1000px;color:orangered">合计：￥{{zongprice}}元</span>
-        <a style="float: right;margin-right: 150px" @click="zhifu"><img :src="zfb" style="width: 100px"></a>
+        <a style="float: right;margin-right: 150px" @click="chaXun(tradeno+number2)"><img :src="zfb" style="width: 100px"></a>
       </div>
       <!-- 添加模态框-->
       <el-dialog id="paydialog" title="支付" :visible.sync="dialogFormVisible">
@@ -98,6 +98,7 @@
           return {
             selectshop:this.$route.params.selectshop,
             zongprice:this.$route.params.zongprice,
+            shid:0,
             username:'',
             userphone:'',
             shaddress:'',
@@ -106,7 +107,7 @@
             shanghus:[],
             zfb:'../img/支付宝.jpg',
             tradeno:'FM',
-            number2:'20201230001',
+            number2:/*'100000001',*/'20201230001',
             dialogFormVisible:false,
             shopName:'',
           }
@@ -121,11 +122,11 @@
         },
         getData() {  //获取数据
           var _this = this;
-          console.log(_this.selectshop)
           var params = new URLSearchParams();
           params.append("shstate","已通过");
 
           this.$axios.post("selShangHu.action",params).then(function (result) {  //成功  执行then里面的方法
+            _this.shid=result.data.rows[0].shid;
             _this.username=result.data.rows[0].user.username;
             _this.userphone=result.data.rows[0].user.userphone;
             _this.shaddress=result.data.rows[0].shaddress;
@@ -136,6 +137,7 @@
           });
         },
         handleCurrentChange(val){
+          this.shid=val.shid;
           this.username=val.user.username;
           this.userphone=val.user.userphone;
           this.shaddress=val.shaddress
@@ -165,18 +167,40 @@
             console.log(error)
           });
         },
-        zhifu(){
+        zhifu(num){
           this.dialogFormVisible=true;
-
           var _this = this;
           var params = new URLSearchParams();
+
           params.append("price",_this.zongprice);
-          params.append("tradeno",_this.tradeno+_this.number2);
+          params.append("tradeno",num);
           _this.selectshop.forEach((item)=>{
             _this.shopName = _this.shopName + item.commodity.comname+',';
           })
+          _this.selectshop.forEach((item)=>{
+            var params1 = new URLSearchParams();
+            params1.append("commodity.comid",item.commodity.comid);
+            params1.append("ordercount",item.shopCount);
+            params1.append("user.userid",sessionStorage.getItem("userid"));
+            params1.append("shangHuInfo.shid",_this.shid);
+            params1.append("totalmoney",item.shopCount*item.commodity.comprice);
+            params1.append("zhiFuBao",num);
+            this.$axios.post("addOrder.action",params1).then(function (result) {  //成功  执行then里面的方法
+
+            }).catch(function (error) { //失败 执行catch方法
+
+            });
+
+            var params2=new URLSearchParams();
+            params2.append("id",item.shopid);
+
+            this.$axios.post("delShoppingCar.action",params2).then(function (result) {  //成功  执行then里面的方法
+
+            }).catch(function (error) { //失败 执行catch方法
+              console.log(error)
+            });
+          })
           params.append("tradename",_this.shopName);
-          console.log(_this.shopName)
           _this.number2=Number(_this.number2)+Number(1);
           this.$axios.post("pay.action",params).then(function (result) {  //成功  执行then里面的方法
             var bodystr = result.data;  //后端返回的支付页面代码
@@ -209,6 +233,23 @@
             }
           }
         },
+        chaXun(num){
+          var _this = this;
+          var params = new URLSearchParams();
+          params.append("zhiFuBao",num);
+          this.$axios.post("queryZhiFuBao.action",params).then(function (result) {  //成功  执行then里面的方法
+              if(result.data==0){
+                _this.zhifu(num);
+              }else{
+                _this.number2 = Number(_this.number2)+Number(1);
+                _this.chaXun(_this.tradeno+_this.number2);
+              }
+
+
+          }).catch(function (error) { //失败 执行catch方法
+
+          });
+        }
       },
       created() {
           this.getData();

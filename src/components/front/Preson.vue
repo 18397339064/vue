@@ -20,10 +20,11 @@
                 <el-input v-model="updateform.updateusername" style="width: 350px"></el-input>
               </el-form-item>
               <el-form-item label="用户性别">
-                <el-input v-model="updateform.updateusersex"  readonly style="width: 350px"></el-input>
+                <el-radio   v-model="updateform.updateusersex" label="男">男</el-radio>
+                <el-radio v-model="updateform.updateusersex" label="女">女</el-radio>
               </el-form-item>
               <el-form-item label="用户电话" prop="updateuserphone">
-                <el-input v-model="updateform.updateuserphone" style="width: 350px"></el-input>
+                <el-input  v-model="updateform.updateuserphone" style="width: 350px"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -86,7 +87,7 @@
                     label="订单状态"
                     align="center">
                     <template slot-scope="scope">
-                      {{ scope.row.orderstate == 0 ? '待付款' : scope.row.orderstate == 1 ?'待发货': scope.row.orderstate == 2 ?'待收货': scope.row.orderstate == 3 ?'待收货': scope.row.orderstate == 4 ?'已收货': '' }}
+                      {{ scope.row.orderstate == 0 ? '待付款' : scope.row.orderstate == 1 ?'待发货': scope.row.orderstate == 2 ?'运货中': scope.row.orderstate == 3 ?'待收货': scope.row.orderstate == 4 ?'已收货': '' }}
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -188,19 +189,12 @@
                     label="操作"
                     align="center" width="200">
                     <template slot-scope="scope">
-                      <el-button type="danger" slot="reference" style="width: 110px" round v-if="scope.row.orderstate==0" @click="fuKuan(scope.row)">付款</el-button>
+                      <el-button type="danger" slot="reference" style="width: 110px" round @click="fuKuan(scope.row)">付款</el-button>
                       <el-popconfirm @confirm="shanchu(scope.row)"
                                      title="确定删除吗？"
                       >
-                        <el-button type="danger" slot="reference" round v-if="scope.row.orderstate==0">删除订单</el-button>
+                        <el-button type="danger" slot="reference" round>删除订单</el-button>
                       </el-popconfirm>
-                      <el-popconfirm
-                        title="确定取消吗？"
-                      >
-                        <el-button type="danger" slot="reference" round v-if="scope.row.orderstate==1">取消订单</el-button>
-                      </el-popconfirm>
-                      <el-button type="danger" slot="reference" round v-if="scope.row.orderstate==2">确认收货</el-button>
-                      <el-button type="danger" slot="reference" style="width: 110px" round v-if="scope.row.orderstate==3">删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -217,6 +211,12 @@
                   @current-change="currentchange"
                   @size-change="sizechange">
                 </el-pagination>
+                <!-- 添加模态框-->
+                <el-dialog id="paydialog" title="支付" :visible.sync="dialogFormVisible">
+                  <div id="mydiv1">
+
+                  </div>
+                </el-dialog>
               </div>
             </el-tab-pane>
             <el-tab-pane name="daiFaHuo">
@@ -352,7 +352,7 @@
                     label="订单状态"
                     align="center">
                     <template slot-scope="scope">
-                      {{ scope.row.orderstate == 0 ? '待付款' : scope.row.orderstate == 1 ?'待发货': scope.row.orderstate == 2 ?'待收货': scope.row.orderstate == 3 ?'已收货': scope.row.orderstate == 4 ?'已收货': '' }}
+                      {{ scope.row.orderstate == 0 ? '待付款' : scope.row.orderstate == 1 ?'待发货': scope.row.orderstate == 2 ?'运货中': scope.row.orderstate == 3 ?'待收货': scope.row.orderstate == 4 ?'已收货': '' }}
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -486,8 +486,8 @@
               <el-form-item label="商户名" prop="shname">
                 <el-input v-model="addform.shname" style="width: 350px"></el-input>
               </el-form-item>
-              <el-form-item label="用户名">
-                <el-input v-model="addform.username" style="width: 350px"></el-input>
+              <el-form-item label="用户账号">
+                <el-input v-model="addform.useraccount" style="width: 350px"></el-input>
               </el-form-item>
               <el-form-item label="省">
                 <el-select v-model="pid" @change="getcity">
@@ -530,8 +530,8 @@
                   <el-form-item label="商户名" prop="shname">
                     <el-input v-model="updateformsh.shname" style="width: 350px"></el-input>
                   </el-form-item>
-                  <el-form-item label="用户名">
-                    <el-input v-model="updateformsh.username" readonly style="width: 350px"></el-input>
+                  <el-form-item label="用户账号">
+                    <el-input v-model="updateformsh.useraccount" readonly style="width: 350px"></el-input>
                   </el-form-item>
                   <el-form-item label="省">
                     <el-select v-model="pid" @change="getcity">
@@ -975,6 +975,17 @@
               </el-tabs>
               </div>
             </el-tab-pane>
+            <el-tab-pane name="shangHuTongJi">
+              <span slot="label"><i class="el-icon-s-promotion"></i> 统计营收</span>
+              统计营收
+              <div v-if="isShangHuTongJi">
+                <el-select v-model="month" @change="changemonth">
+                  <el-option v-for="m in months" :label="m.name" :value="m"></el-option>
+                </el-select>
+                <div style="height: 20px"></div>
+                <div id="myChart2" :style="{width: '500px', height: '400px'}"></div>
+              </div>
+            </el-tab-pane>
           </el-tabs>
         </el-tab-pane>
       </el-tabs>
@@ -993,9 +1004,9 @@
           updateuserid:sessionStorage.getItem("userid"),
           updateuseraccount:sessionStorage.getItem("useraccount"),
           updateuserpwd:sessionStorage.getItem("userpwd"),
-          updateusername:sessionStorage.getItem("username"),
-          updateusersex:sessionStorage.getItem("usersex"),
-          updateuserphone:sessionStorage.getItem("userphone")
+          updateusername:sessionStorage.getItem("username")=="null"?'':sessionStorage.getItem("username"),
+          updateusersex:sessionStorage.getItem("usersex")=="null"?'男':sessionStorage.getItem("usersex"),
+          updateuserphone:sessionStorage.getItem("userphone")=="null"?'':sessionStorage.getItem("userphone"),
         },
         updateforms:{
           updateuserpwd:[
@@ -1020,6 +1031,7 @@
         shangHu:'shangHuGuanLi',
         isShangHuGuanLi:true,
         isShangHuDingDan:false,
+        isShangHuTongJi:false,
         shangDingDan:'shangQuanBu',
         isShangQuanBu:true,
         isShangDaiFaHuo:false,
@@ -1042,7 +1054,7 @@
         addform: {
           shname:'',
           userid:sessionStorage.getItem("userid"),
-          username:sessionStorage.getItem("username"),
+          useraccount:sessionStorage.getItem("useraccount"),
           shaddress:''
         },
         addforms:{
@@ -1059,7 +1071,7 @@
           shid:sessionStorage.getItem("shid"),
           shname:sessionStorage.getItem("shname"),
           userid:sessionStorage.getItem("userid"),
-          username:sessionStorage.getItem("username"),
+          useraccount:sessionStorage.getItem("useraccount"),
           shaddress:sessionStorage.getItem("shaddress")
         },
         updateformshs:{
@@ -1079,7 +1091,26 @@
         cid:0,
         aid:0,
         YongHuNum:0,
-        ShangHuNum:0
+        ShangHuNum:0,
+        xdatas:[],
+        ydatas:[],
+        monthid:new Date().getMonth()+1,
+        month:'',
+        months:[
+          {id:'01',name:'一月份'},
+          {id:'02',name:'二月份'},
+          {id:'03',name:'三月份'},
+          {id:'04',name:'四月份'},
+          {id:'05',name:'五月份'},
+          {id:'06',name:'六月份'},
+          {id:'07',name:'七月份'},
+          {id:'08',name:'八月份'},
+          {id:'09',name:'九月份'},
+          {id:'10',name:'十月份'},
+          {id:'11',name:'十一月份'},
+          {id:'12',name:'十二月份'}
+        ],
+        dialogFormVisible:false
       }
     },
     methods:{
@@ -1175,6 +1206,7 @@
             params.append("userid",_this.updateform.updateuserid);
             params.append("userpwd",_this.updateform.updateuserpwd);
             params.append("username",_this.updateform.updateusername);
+            params.append("usersex",_this.updateform.updateusersex)
             params.append("userphone",_this.updateform.updateuserphone);
 
 
@@ -1194,6 +1226,7 @@
             }).catch(function (error) { //失败 执行catch方法
               console.log(error)
             });
+
           } else {
             console.log('error submit!!');
             return false;
@@ -1553,9 +1586,11 @@
         if(tab.name=="shangHuGuanLi"){
           this.isShangHuGuanLi=true;
           this.isShangHuDingDan=false;
+          this.isShangHuTongJi=false;
         }else if(tab.name=="shangHuDingDan"){
           this.isShangHuGuanLi=false;
           this.isShangHuDingDan=true;
+          this.isShangHuTongJi=false;
           if(this.isShangQuanBu==true){
             this.getShangHuOrder(this.ShangHuNum);
           }else if(this.isShangDaiFaHuo==true){
@@ -1567,6 +1602,11 @@
           }else if(this.isShangYiTiHuo==true){
             this.getShangHuOrder(this.ShangHuNum);
           }
+        }else if(tab.name=="shangHuTongJi"){
+          this.isShangHuGuanLi=false;
+          this.isShangHuDingDan=false;
+          this.isShangHuTongJi=true;
+          this.revenue()
         }
       },
       //商户确认收货
@@ -1594,10 +1634,104 @@
         }).catch(function (error) { //失败 执行catch方法
           console.log(error)
         });
+      },
+      revenue(){
+        var _this = this;
+
+        var params = new URLSearchParams();
+        params.append("month", _this.monthid);
+        params.append("shid", _this.updateformsh.shid);
+        this.$axios.post("shanghurevenuetongji.action",params).then((result) => {
+          _this.xdatas.length = 0; //清空数组
+          _this.ydatas.length = 0;
+          for (let i = 0; i < result.data.length; i++) {
+            _this.xdatas.push(result.data[i].type);
+            _this.ydatas.push(result.data[i].num);
+          }
+        }).catch(function (error) {
+          console.log(error)
+        });
+      },
+      drawLine() {
+        // 1、基于准备好的dom，初始化echarts实例
+        let myChart = this.$echarts.init(document.getElementById("myChart2"));
+        //2、构造图表数据
+        let options = {
+          title: {
+            text: "商户营收分析",
+            left: "center",
+            tooltip: {},
+          },
+          xAxis: {
+            data:this.xdatas
+          },
+          yAxis: {},
+          series: [
+            {
+              name: "商户营收",
+              data: this.ydatas,
+              type: "bar",
+            },
+          ],
+        };
+        // 3、绘制图表
+        myChart.setOption(options);
+      },
+      changemonth(data){
+        var _this = this;
+        _this.monthid = data.id;
+        _this.month = _this.months[_this.monthid-1].name;
+        _this.xdatas=[];
+        _this.ydatas=[];
+        var params = new URLSearchParams();
+        params.append("month", _this.monthid);
+        params.append("shid", _this.updateformsh.shid);
+        this.$axios.post("shanghurevenuetongji.action",params).then((result) => {
+          _this.xdatas.length = 0; //清空数组
+          _this.ydatas.length = 0;
+          for (let i = 0; i < result.data.length; i++) {
+            _this.xdatas.push(result.data[i].type);
+            _this.ydatas.push(result.data[i].num);
+          }
+        }).catch(function (error) {
+          console.log(error)
+        });
+      },
+      fuKuan(scope){
+        this.dialogFormVisible=true;
+        var _this = this;
+        var params = new URLSearchParams();
+        console.log(scope)
+        params.append("price",scope.totalmoney);
+        params.append("tradeno",scope.zhiFuBao);
+        params.append("tradename",scope.commodity.comname);
+        this.$axios.post("pay.action",params).then(function (result) {  //成功  执行then里面的方法
+          var bodystr = result.data;  //后端返回的支付页面代码
+          console.log(bodystr)
+          bodystr=bodystr.substr(0,bodystr.indexOf("<script>"));
+          console.log(bodystr)
+          document.getElementById("mydiv1").innerHTML=bodystr;
+          document.getElementsByName("punchout_form")[0].submit(); //返回代码中需要表单提交得到真实的支付页面
+        }).catch(function (error) { //失败 执行catch方法
+
+        });
       }
     },
     created() {
+      this.month = this.months[this.monthid-1].name;
       this.getprovince()
+    },
+    mounted: function () {
+      this.drawLine(); //按照默认值绘制图表
+    },
+    watch: {
+      ydatas: {
+        //对于深层对象的属性，watch不可达，因此对数组监控需要将数组先清空，再添加数据
+        handler: function () {
+          this.drawLine();
+        },
+        deep: true,
+      },
     }
   }
 </script>

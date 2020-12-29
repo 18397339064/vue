@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-select v-model="monthid" @change="changemonth">
-      <el-option v-for="m in months" :label="m.name" :value="m.id"></el-option>
+    <el-select v-model="month" @change="changemonth">
+      <el-option v-for="m in months"  :label="m.name" :value="m"></el-option>
     </el-select>
     <div style="height: 20px"></div>
     <div id="myChart" :style="{width: '500px', height: '400px'}"></div>
@@ -16,6 +16,7 @@
           xdatas:[],
           ydatas:[],
           monthid:new Date().getMonth()+1,
+          month:'',
           months:[
             {id:'01',name:'一月份'},
             {id:'02',name:'二月份'},
@@ -36,6 +37,9 @@
         this.drawLine(); //按照默认值绘制图表
       },
       created() {
+        this.month = this.months[this.monthid-1].name;
+
+
         var _this = this;
 
         var params = new URLSearchParams();
@@ -88,9 +92,10 @@
           // 3、绘制图表
           myChart.setOption(options);
         },
-        changemonth(){
+        changemonth(data){
           var _this = this;
-
+          _this.monthid = data.id;
+          _this.month = _this.months[_this.monthid-1].name;
           _this.xdatas=[];
           _this.ydatas=[];
           var params = new URLSearchParams();
