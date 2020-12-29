@@ -92,7 +92,6 @@
               _this.roleid=row.roleid;
               _this.rname=row.rolename
 
-              alert(_this.roleMenu.toString())
               _this.getdata();
             }).catch(function (error) { //失败 执行catch方法
               console.log(error)
