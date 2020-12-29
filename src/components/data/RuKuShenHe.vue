@@ -450,7 +450,6 @@
             return;
           }
 
-          alert(JSON.stringify(_this.manyWarehouseData));
           this.$axios({
             method: 'post',
             url: 'manyWarehouseUpdPurYes.action',
