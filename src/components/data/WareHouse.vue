@@ -34,10 +34,10 @@
             <el-select v-model="addform.ctid" placeholder="请选择商品类型">
               <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
             </el-select>
-          </el-form-item><!--
+          </el-form-item>
           <el-form-item label="容量" prop="capacity">
             <el-input v-model.number="addform.capacity"></el-input>
-          </el-form-item>-->
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addwarehousedialog = false">取 消</el-button>
@@ -87,11 +87,11 @@
       <el-table-column
         prop="category.ctname"
         label="仓库分类">
-      </el-table-column><!--
+      </el-table-column>
       <el-table-column
         prop="capacity"
         label="容量">
-      </el-table-column>-->
+      </el-table-column>
       <el-table-column
         fixed="right"
         label="操作">
@@ -152,9 +152,9 @@
             <el-option v-for="cate in category" :value="cate.ctid" :label="cate.ctname"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="容量">
+        <!--<el-form-item label="容量">
           <el-input v-model="updateform.capacity" readonly></el-input>
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updatewarehousedialog = false">取 消</el-button>
@@ -310,7 +310,7 @@
             params.append("whname",_this.addform.whname);
             params.append("whaddress",_this.addform.whaddress);
             params.append("category.ctid",_this.addform.ctid);
-           /* params.append("capacity",_this.addform.capacity);*/
+            params.append("capacity",_this.addform.capacity);
 
             this.$axios.post("addWarehouse.action",params).then(function (result) {  //成功  执行then里面的方法
 

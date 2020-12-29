@@ -31,7 +31,7 @@
         label="购买数量">
       </el-table-column>
       <el-table-column
-        prop="user.username"
+        prop="user.useraccount"
         label="用户名称">
       </el-table-column>
       <el-table-column
@@ -277,7 +277,7 @@
           _this.warehouse = result.data;
 
           _this.whid = _this.warehouse[0].whid;
-
+          _this.queryWarehouseStockCount();
           _this.queryAllWarehouseStockCount();
         }).catch(function (error) { //失败 执行catch方法
           console.log(error)
@@ -498,7 +498,7 @@
         var _this=this;
         this.$axios.post("queryWarehouseStockCount.action",param).then(function (result) {
 
-          _this.capacity=result.data;
+          _this.capacity=result.data==""?0:result.data;
 
         }).catch(function (error) {
 
@@ -518,13 +518,19 @@
 
           for(var i=0;i<_this.warehouse.length;i++){
 
+            var bool=false;
             for (var j=0;j<result.data.length;j++){
               if(_this.warehouse[i].whid==result.data[j].warehouse.whid){
 
                 _this.warehouse[i].newParam="shenyu";
                 _this.warehouse[i].shenyu=result.data[j].stockcount;
-              }
 
+                bool=true;
+              }
+              if(bool==false&&j==result.data.length-1){
+                _this.warehouse[i].newParam="shenyu";
+                _this.warehouse[i].shenyu=0;
+              }
             }
 
           }

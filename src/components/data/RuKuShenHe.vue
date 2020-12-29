@@ -349,6 +349,7 @@
 
           this.$axios.post("queryStockCapacity.action",params).then(function (result) {  //成功  执行then里面的方法
 
+            alert(result.data);
             _this.shenyu=_this.capacity-result.data;
 
           }).catch(function (error) { //失败 执行catch方法
@@ -365,6 +366,7 @@
             for (var i=0;i<_this.warehouse.length;i++){
 
             //循环所有类型仓库 的库存
+              var bool=false;
             for (var j=0;j<result.data.length;j++){
 
               //判断这个仓库的id 是否能对上仓库 库存 中查询出来的id
@@ -372,6 +374,11 @@
                 //如果这个类型的仓库 对上了这个 库存仓库的id 就给这个类型里的仓库数据添加一个新的属性（剩余容量）
               _this.warehouse[i].newParam='shenyu';
               _this.warehouse[i].shenyu=_this.warehouse[i].capacity-result.data[j].stockcount;
+              bool=true;
+              }
+              if(bool!=true&&j==result.data.length-1){
+                _this.warehouse[i].newParam='shenyu';
+                _this.warehouse[i].shenyu=_this.warehouse[i].capacity;
 
               }
             }

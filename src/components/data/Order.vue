@@ -4,7 +4,7 @@
 
       <el-select v-model="orderstate" placeholder="请选择订单类型"  @change="query">
         <el-option value="" label="---请选择订单类型---"></el-option>
-        <el-option v-for="s in states" :value="s.name" :label="s.name"></el-option>
+        <el-option v-for="s in states" :value="s.id" :label="s.name"></el-option>
       </el-select>
 
     <el-table
@@ -31,7 +31,7 @@
         label="购买数量">
       </el-table-column>
       <el-table-column
-        prop="user.username"
+        prop="user.useraccount"
         label="用户名称">
       </el-table-column>
       <el-table-column
@@ -45,17 +45,12 @@
       <el-table-column
         prop="orderstate"
         label="订单状态">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" round @click="update1(scope.row)">编辑</el-button>
-          <el-popconfirm @confirm="dele(scope.row.ctid)"
-                         title="确定删除吗？"
-          >
-            <el-button type="danger" slot="reference" round >删除</el-button>
-          </el-popconfirm>
+          <span style="color: coral" v-if="scope.row.orderstate==1">待出库</span>
+          <span style="color: goldenrod" v-else-if="scope.row.orderstate==2">出库中</span>
+          <span style="color: black" v-else-if="scope.row.orderstate==3">已到货</span>
+          <span style="color: green" v-else-if="scope.row.orderstate==4">已收货</span>
+          <span style="color: green" v-else-if="scope.row.orderstate==5">待付款</span>
         </template>
       </el-table-column>
     </el-table>
@@ -83,12 +78,11 @@
           return {
         order: [],
         states:[
-          {name:'待付款'},
-          {name:'待出库'},
-          {name:'出库中'},
-          {name:'待提货'},
-          {name:'已提货'},
-          {name:'已取消'},
+          {id:1,name:'待出库'},
+          {id:2,name:'出库中'},
+          {id:3,name:'已到货'},
+          {id:4,name:'已收货'},
+
         ],
         pageindex:1,//当前显示页面
         totalpage:0,//总页面
