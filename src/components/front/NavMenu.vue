@@ -89,6 +89,7 @@
       zhuxiao() {
         sessionStorage.removeItem("userid")
         sessionStorage.removeItem("useraccount")  //从浏览器session清空数据
+        this.comname = "index";
         this.useraccount=null;
       }
     },

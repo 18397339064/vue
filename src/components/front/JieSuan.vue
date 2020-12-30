@@ -107,7 +107,7 @@
             shanghus:[],
             zfb:'../img/支付宝.jpg',
             tradeno:'FM',
-            number2:/*'100000001',*/'20201230001',
+            number2:/*'100000001',*/'20201230200',
             dialogFormVisible:false,
             shopName:'',
           }
@@ -239,6 +239,7 @@
           params.append("zhiFuBao",num);
           this.$axios.post("queryZhiFuBao.action",params).then(function (result) {  //成功  执行then里面的方法
               if(result.data==0){
+                alert(num);
                 _this.zhifu(num);
               }else{
                 _this.number2 = Number(_this.number2)+Number(1);
